@@ -1,10 +1,11 @@
+import { ChakraProvider } from '@chakra-ui/react';
+import { Session } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
+import Account from '../src/components/Account';
+import Auth from '../src/components/Auth';
 import './App.css';
 import { supabaseClient } from './config/supabase-client';
-import { Session } from '@supabase/supabase-js';
-import { ChakraProvider } from '@chakra-ui/react';
-import Auth from '../src/components/Auth';
-import Account from '../src/components/Account';
+import theme from './config/theme';
 
 function App() {
   const [session, setSession] = useState<Session | null>();
@@ -17,7 +18,7 @@ function App() {
     });
   }, []);
 
-  return <ChakraProvider>{!session ? <Auth /> : <Account key={session.user?.id} session={session} />}</ChakraProvider>;
+  return <ChakraProvider theme={theme}>{!session ? <Auth /> : <Account key={session.user?.id} session={session} />}</ChakraProvider>;
 }
 
 export default App;
