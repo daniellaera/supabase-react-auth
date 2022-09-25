@@ -2,20 +2,26 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.209.6/containers/typescript-node
 {
 	"name": "Node.js & TypeScript",
-	"build": {
-		"dockerfile": "Dockerfile",
-		// Update 'VARIANT' to pick a Node version: 16, 14, 12.
-		// Append -bullseye or -buster to pin to an OS version.
-		// Use -bullseye variants on local on arm64/Apple Silicon.
-		"args": {
-			"VARIANT": "16-bullseye"
-		}
-	},
+	"dockerComposeFile": "docker-compose.yml",
+  	"service": "app",
+  	"workspaceFolder": "/workspace",
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
+		"sqltools.connections": [
+			{
+			  "name": "Container database",
+			  "driver": "PostgreSQL",
+			  "previewLimit": 50,
+			  "server": "localhost",
+			  "port": 5432,
+			  "database": "supabase_react_auth_db",
+			  "username": "postgres",
+			  "password": "postgres"
+			}
+		],
 		"remote.containers.dotfiles.repository": "https://github.com/daniellaera/dotfiles.git",
 		"editor.codeActionsOnSave": {
-			"source.organizeImports": true
+			"source.organizeImports": false
 		},
 		"workbench.editor.titleScrollbarSizing": "large"
 	},
@@ -25,12 +31,17 @@
 		"mutantdino.resourcemonitor",
 		"eamodio.gitlens",
 		"wix.vscode-import-cost",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"prisma.prisma",
+		"ms-azuretools.vscode-docker",
+		"cweijan.vscode-postgresql-client2",
+		"mtxr.sqltools",
+		"mtxr.sqltools-driver-pg"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "npm install",
+	// "postCreateCommand": "npm install",
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "node"
 }
