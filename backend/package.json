@@ -9,7 +9,8 @@
     "build": "tsc",
     "lint": "eslint --fix src test",
     "test": "jest",
-    "postinstall": "bash ./seed.sh"
+    "postinstall": "npm run db:seed",
+    "db:seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "CJ R. <cj@null.computer> (https://w3cj.now.sh)",
