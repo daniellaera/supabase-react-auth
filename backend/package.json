@@ -9,7 +9,6 @@
     "build": "tsc",
     "lint": "eslint --fix src test",
     "test": "jest",
-    "postinstall": "npm run db:seed",
     "db:seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
