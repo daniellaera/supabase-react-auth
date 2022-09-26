@@ -1,8 +1,9 @@
 #!/bin/sh
 
-if [[ -d ../../backend ]]
-then 
-    "echo hi it exists!"
-else
-    "echo it doesn't exist!"
-fi
+echo "Installing frontend dependencies"
+cd "$PWD/frontend"
+/usr/local/bin/npm install
+
+echo "Installing backend dependencies"
+cd "../backend"
+/usr/local/bin/npm install

@@ -34,14 +34,15 @@
 		"esbenp.prettier-vscode",
 		"prisma.prisma",
 		"ms-azuretools.vscode-docker",
-		"cweijan.vscode-postgresql-client2",
-		"mtxr.sqltools",
-		"mtxr.sqltools-driver-pg"
+		"cweijan.vscode-postgresql-client2"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "npm install",
+	"postCreateCommand": "bash .devcontainer/scripts/bootstrap.sh",
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "node"
+	"remoteUser": "node",
+	"features": {
+		"powershell": "latest"
+	}
 }
