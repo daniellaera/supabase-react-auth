@@ -9,7 +9,7 @@
     "build": "tsc",
     "lint": "eslint --fix src test",
     "test": "jest",
-    "db:seed": "npx prisma migrate dev --name init && npx prisma db seed"
+    "db:seed": "npx prisma migrate dev --name init"
   },
   "keywords": [],
   "author": "CJ R. <cj@null.computer> (https://w3cj.now.sh)",
