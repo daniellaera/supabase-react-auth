@@ -2,18 +2,33 @@ import axios, { AxiosResponse } from "axios"
 
 const baseUrl: string = "http://localhost:5000/api/v1/posts"
 
-export const getTodos = async (): Promise<AxiosResponse<ApiDataType>> => {
-    try {
-      const todos: AxiosResponse<ApiDataType> = await axios.get(
-        baseUrl + "/", {headers: {"Content-Type": "application/json"}}
-      )
-      return todos
-    } catch (error: any) {
-      throw new Error(error)
-    }
+export async function getPosts() {
+  const response = await fetch(baseUrl);
+  if (!response.ok) {
+    throw new Error('Failed to fetch posts.')
+  }
+  return response.json();
+}
+
+export async function savePost(post: any) {
+  if (post.title.trim().length < 5 || post.content.trim().length < 10) {
+    throw { message: 'Invalid input data provided.', status: 422 };
   }
 
-export const addTodo = async (
+  const response = await fetch(baseUrl + '/create', {
+    method: 'POST',
+    body: JSON.stringify(post),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw { message: 'Could not save post.', status: 500 };
+  }
+}
+
+/* export const addTodo = async (
     formData: IPost
   ): Promise<AxiosResponse<ApiDataType>> => {
     try {
@@ -30,8 +45,8 @@ export const addTodo = async (
     } catch (error: any) {
       throw new Error(error)
     }
-  }
-
+  } */
+/* 
   export const updateTodo = async (
     todo: IPost
   ): Promise<AxiosResponse> => {
@@ -47,7 +62,7 @@ export const addTodo = async (
     } catch (error: any) {
       throw new Error(error)
     }
-  }
+  } */
   
   export const deleteTodo = async (
     _id: string

@@ -41,13 +41,13 @@ const MainNavigation = () => {
             </NavLink>
           
             <NavLink
-              to="/expenses"
+              to="/posts"
               className={({ isActive }) =>
                 isActive ? classes.active : undefined
               }
               end
             >
-              Expenses
+              Posts
             </NavLink>
           
           

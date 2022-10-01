@@ -1,37 +1,43 @@
 import { ChakraProvider, theme } from '@chakra-ui/react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Expenses from './components/Expenses';
 import Invoices from './components/Invoices';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import RootLayout from './components/RootLayout';
-import ExpensesLayout from './pages/ExpensesLayout';
+import NewPostPage from './pages/NewPostPage';
+import PostLayout from './pages/PostLayout';
+import PostPage from './pages/PostPage';
 import ProfilePage from './pages/ProfilePage';
 import WelcomePage from './pages/WelcomePage';
 
 export const App = () => (
   <ChakraProvider theme={theme}>
-  <BrowserRouter>
-    <RootLayout>
+    <BrowserRouter>
+      <RootLayout>
         <Routes>
           <Route path="/" element={<WelcomePage />} />
-          <Route path="/expenses" element={<ExpensesLayout />}>
-            <Route index element={<Expenses />} />
+          <Route path="/posts" element={<PostLayout />}>
+            <Route index element={<PostPage />} />
           </Route>
+          <Route path="/post/new" element={
+            <ProtectedRoute>
+              <NewPostPage />
+            </ProtectedRoute>
+          } />
           <Route path="/invoices" element={<Invoices />} />
           <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/login" element={<Login />} />
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </RootLayout>
     </BrowserRouter>
-    </ChakraProvider>
+  </ChakraProvider>
   /* <ChakraProvider theme={theme}>
     <Box textAlign="center" fontSize="xl">
       <Grid minH="100vh" p={3}>

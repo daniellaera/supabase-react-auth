@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   const posts = await prisma.post.findMany();
-  res.json(posts);
+  res.status(200).json(posts);
 });
 
 router.post(`/create`, async (req, res) => {
@@ -14,7 +14,7 @@ router.post(`/create`, async (req, res) => {
     data: {
       title,
       content,
-      author: { connect: { email: authorEmail } },
+      authorEmail,
     },
   });
   res.json(result);

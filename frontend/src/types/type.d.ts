@@ -1,5 +1,5 @@
 interface IPost {
-    _id: string
+    id: number
     authorEmail: string
     title: string
     content: string;
@@ -15,7 +15,11 @@ interface IPost {
   type ApiDataType = {
     message: string
     status: string
-    todos: IPost[]
+    posts: IPost[]
     todo?: IPost
   }
+
+  type GetPostsResponse = {
+    posts: IPost[]
+  };
   
