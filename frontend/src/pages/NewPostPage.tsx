@@ -1,47 +1,104 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { savePost } from '../api';
 import NewPostForm from '../components/NewPostForm';
 import { supabaseClient } from '../config/supabase-client';
+import { useMutation } from 'react-query';
+import axios from 'axios';
 
 function NewPostPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState();
-  const navigate = useNavigate();
+  const [postTitle, setPostTitle] = useState("");
+  const [postContent, setPostContent] = useState("");
 
-  async function submitHandler(event: any) {
-    event.preventDefault();
-    setIsSubmitting(true);
-    try {
-        const user = supabaseClient.auth.user();
+  const [postResult, setPostResult] = useState<any>(null);
 
-      const formData = new FormData(event.target);
-      const post = {
-        title: formData.get('title'),
-        content: formData.get('content'),
+  const fortmatResponse = (res: any) => {
+    return JSON.stringify(res, null, 2);
+  };
+
+  const user = supabaseClient.auth.user()
+
+  const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(
+    async () => {
+      return await axios.post(`http://localhost:5000/api/v1/posts/create`, {
+        title: postTitle,
+        content: postContent,
         authorEmail: user?.email
-      };
-      await savePost(post);
-      navigate('/');
-    } catch (err: any) {
-      setError(err);
+      });
+    },
+    {
+      onSuccess: (res) => {
+        const result = {
+          status: res.status + "-" + res.statusText,
+          headers: res.headers,
+          data: res.data,
+        };
+
+        setPostResult(fortmatResponse(result));
+      },
+      onError: (err: any) => {
+        setPostResult(fortmatResponse(err.response?.data || err));
+      },
     }
-    setIsSubmitting(false);
+  );
+
+  useEffect(() => {
+    if (isPostingTutorial) setPostResult("posting...");
+  }, [isPostingTutorial]);
+
+  function postData() {
+    try {
+      postTutorial();
+    } catch (err) {
+      setPostResult(fortmatResponse(err));
+    }
   }
 
-  function cancelHandler() {
-    navigate('/blog');
-  }
+  const clearPostOutput = () => {
+    setPostResult(null);
+  };
 
   return (
-    <>
-      {error && <p>{error}</p>}
-      <NewPostForm
-        onCancel={cancelHandler}
-        onSubmit={submitHandler}
-        submitting={isSubmitting}
-      />
-    </>
+    <div id="app" className="container">
+    <div className="card">
+      <div className="card-header">React Query Axios POST </div>
+      <div className="card-body">
+        <div className="form-group">
+          <input
+            type="text"
+            value={postTitle}
+            onChange={(e) => setPostTitle(e.target.value)}
+            className="form-control"
+            placeholder="Title"
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            value={postContent}
+            onChange={(e) => setPostContent(e.target.value)}
+            className="form-control"
+            placeholder="Description"
+          />
+        </div>
+        <button className="btn btn-sm btn-primary" onClick={postData}>
+          Post Data
+        </button>
+        <button
+          className="btn btn-sm btn-warning ml-2"
+          onClick={clearPostOutput}
+        >
+          Clear
+        </button>
+
+        {postResult && (
+          <div className="alert alert-secondary mt-2" role="alert">
+            <pre>{postResult}</pre>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
   );
 }
 

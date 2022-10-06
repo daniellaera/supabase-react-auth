@@ -2,12 +2,17 @@ import axios, { AxiosResponse } from "axios"
 
 const baseUrl: string = "http://localhost:5000/api/v1/posts"
 
-export async function getPosts() {
+/* export async function getPosts() {
   const response = await fetch(baseUrl);
   if (!response.ok) {
     throw new Error('Failed to fetch posts.')
   }
   return response.json();
+} */
+
+export async function fetchPosts() {
+  const { data } = await axios.get(baseUrl)
+  return data
 }
 
 export async function savePost(post: any) {

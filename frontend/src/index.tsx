@@ -5,15 +5,20 @@ import { App } from "./App"
 import reportWebVitals from "./reportWebVitals"
 import * as serviceWorker from "./serviceWorker"
 
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const container = document.getElementById("root")
 if (!container) throw new Error('Failed to find the root element');
 const root = ReactDOM.createRoot(container)
 
+const queryClient = new QueryClient();
 root.render(
+
   <React.StrictMode>
-    <ColorModeScript />
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <ColorModeScript />
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>,
 )
 

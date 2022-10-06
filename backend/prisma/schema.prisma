@@ -11,12 +11,28 @@ datasource db {
 }
 
 model Post {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  title       String
+  content     String?
+  published   Boolean   @default(false)
+  viewCount   Int       @default(0)
+  authorEmail String
+  likes       Like[]
+  comments    Comment[]
+}
+
+model Like {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
-  authorEmail String
+  postId    Int
+  Post      Post     @relation(fields: [postId], references: [id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  postId    Int
+  Post      Post     @relation(fields: [postId], references: [id])
 }
