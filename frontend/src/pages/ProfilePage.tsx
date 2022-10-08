@@ -105,6 +105,7 @@ import { supabaseClient } from '../config/supabase-client';
             justifyContent={'center'}
           >
             <PersonalAvatar
+            size={'2xl'}
               url={avatar_url}
               onUpload={(url: any) => {
                 setAvatarUrl(url);

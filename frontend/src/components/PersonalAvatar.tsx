@@ -2,7 +2,7 @@ import { Avatar, Button } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '../config/supabase-client';
 
-const PersonalAvatar = ({ url, onUpload }: any) => {
+const PersonalAvatar = ({ url, onUpload, size }: any) => {
   const [avatarUrl, setAvatarUrl] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -54,7 +54,7 @@ const PersonalAvatar = ({ url, onUpload }: any) => {
     <div>
       {avatarUrl ? (
         <Avatar
-          size={'2xl'}
+          size={size}
           src={avatarUrl}
           mb={4}
           pos={'relative'}
