@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { savePost } from '../api';
 import NewPostForm from '../components/NewPostForm';
 import { supabaseClient } from '../config/supabase-client';
 import { useMutation } from 'react-query';
@@ -9,6 +8,8 @@ import axios from 'axios';
 function NewPostPage() {
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
+
+  const navigate = useNavigate()
 
   const [postResult, setPostResult] = useState<any>(null);
 
@@ -33,6 +34,8 @@ function NewPostPage() {
           headers: res.headers,
           data: res.data,
         };
+
+        navigate('/posts')
 
         setPostResult(fortmatResponse(result));
       },

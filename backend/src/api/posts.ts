@@ -20,4 +20,18 @@ router.post(`/create`, async (req, res) => {
   res.json(result);
 });
 
+router.get('/post/:id', async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const post = await prisma.post.findFirst({
+      where: { id: Number(id) },
+    })
+
+    res.json(post)
+  } catch (error) {
+    res.json({ error: `Post with ID ${id} does not exist in the database` })
+  }
+})
+
 export default router;

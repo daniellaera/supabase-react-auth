@@ -5,6 +5,7 @@ import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import RootLayout from './components/RootLayout';
 import NewPostPage from './pages/NewPostPage';
+import PostDetailPage from './pages/PostDetailPage';
 import PostLayout from './pages/PostLayout';
 import PostPage from './pages/PostPage';
 import ProfilePage from './pages/ProfilePage';
@@ -19,6 +20,7 @@ export const App = () => (
           <Route path="/posts" element={<PostLayout />}>
             <Route index element={<PostPage />} />
           </Route>
+          <Route path="/posts/:id" element={<PostDetailPage />} />
           <Route path="/post/new" element={
             <ProtectedRoute>
               <NewPostPage />

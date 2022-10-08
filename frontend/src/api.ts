@@ -33,6 +33,13 @@ export async function savePost(post: any) {
   }
 }
 
+export async function getPost(id: number) {
+  const response = await axios.get(
+    baseUrl + '/post/' + id
+  );
+  return response
+}
+
 /* export const addTodo = async (
     formData: IPost
   ): Promise<AxiosResponse<ApiDataType>> => {
