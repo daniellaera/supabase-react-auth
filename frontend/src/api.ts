@@ -15,7 +15,7 @@ export async function fetchPosts() {
   return data
 }
 
-export async function savePost(post: any) {
+/* export async function savePost(post: any) {
   if (post.title.trim().length < 5 || post.content.trim().length < 10) {
     throw { message: 'Invalid input data provided.', status: 422 };
   }
@@ -31,24 +31,8 @@ export async function savePost(post: any) {
   if (!response.ok) {
     throw { message: 'Could not save post.', status: 500 };
   }
-}
+} */
 
-export const addTodo = async (formData: IPost): Promise<AxiosResponse<ApiDataType>> => {
-    try {
-      const todo: Omit<IPost, "id"> = {
-        title: formData.title,
-        content: formData.content,
-        authorEmail: formData.authorEmail,
-      }
-      const saveTodo: AxiosResponse = await axios.post(
-        baseUrl + "/create",
-        todo
-      )
-      return saveTodo
-    } catch (error: any) {
-      throw new Error(error)
-    }
-  }
 /* 
   export const updateTodo = async (
     todo: IPost
@@ -67,11 +51,28 @@ export const addTodo = async (formData: IPost): Promise<AxiosResponse<ApiDataTyp
     }
   } */
 
-  export async function getPost(id: number): Promise<AxiosResponse> {
+  export const getPost = async (id: number): Promise<AxiosResponse> => {
     const response: AxiosResponse<ApiDataType> = await axios.get(
       baseUrl + '/post/' + id
     );
     return response
+  }
+
+  export const addTodo = async (formData: any): Promise<AxiosResponse<ApiDataType>> => {
+    try {
+      const todo: Omit<IPost, "id"> = {
+        title: formData.title,
+        content: formData.content,
+        authorEmail: formData.authorEmail,
+      }
+      const saveTodo: AxiosResponse = await axios.post(
+        baseUrl + "/create",
+        todo
+      )
+      return saveTodo
+    } catch (error: any) {
+      throw new Error(error)
+    }
   }
   
   export const deleteTodo = async (id: number): Promise<AxiosResponse> => {

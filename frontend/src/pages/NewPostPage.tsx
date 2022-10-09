@@ -3,23 +3,33 @@ import { useNavigate } from 'react-router-dom';
 import NewPostForm from '../components/NewPostForm';
 import { supabaseClient } from '../config/supabase-client';
 import { useMutation } from 'react-query';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { addTodo } from '../api';
+import { title } from 'process';
 
 function NewPostPage() {
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
 
-  const navigate = useNavigate()
+  const userEmail: string | undefined = supabaseClient.auth.user()?.email
 
-  const [postResult, setPostResult] = useState<any>(null);
+  const createTodo = (): Promise<AxiosResponse> => addTodo({title: postTitle, content: postContent, authorEmail: userEmail})
 
-  const fortmatResponse = (res: any) => {
+  const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(createTodo, {
+    onSuccess(res) { 
+      console.log('voici éa response', res)
+  }
+  })
+
+  // const navigate = useNavigate()
+
+  // const [postResult, setPostResult] = useState<any>(null);
+
+  /* const fortmatResponse = (res: any) => {
     return JSON.stringify(res, null, 2);
-  };
+  }; */
 
-  const user = supabaseClient.auth.user()
-
-  const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(
+  /* const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(
     async () => {
       return await axios.post(`http://localhost:5000/api/v1/posts/create`, {
         title: postTitle,
@@ -43,23 +53,23 @@ function NewPostPage() {
         setPostResult(fortmatResponse(err.response?.data || err));
       },
     }
-  );
+  ); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (isPostingTutorial) setPostResult("posting...");
-  }, [isPostingTutorial]);
+  }, [isPostingTutorial]); */
 
   function postData() {
     try {
-      postTutorial();
+      postTutorial()
     } catch (err) {
-      setPostResult(fortmatResponse(err));
+      //setPostResult(fortmatResponse(err));
     }
   }
 
-  const clearPostOutput = () => {
+  /* const clearPostOutput = () => {
     setPostResult(null);
-  };
+  }; */
 
   return (
     <div id="app" className="container">
@@ -87,18 +97,18 @@ function NewPostPage() {
         <button className="btn btn-sm btn-primary" onClick={postData}>
           Post Data
         </button>
-        <button
+        {/* <button
           className="btn btn-sm btn-warning ml-2"
           onClick={clearPostOutput}
         >
           Clear
-        </button>
+        </button> */}
 
-        {postResult && (
+        {/* {postResult && (
           <div className="alert alert-secondary mt-2" role="alert">
             <pre>{postResult}</pre>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   </div>
