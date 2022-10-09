@@ -2,13 +2,13 @@ import axios, { AxiosResponse } from "axios"
 
 const baseUrl: string = "http://localhost:5000/api/v1/posts"
 
-/* export async function getPosts() {
+export async function getPosts() {
   const response = await fetch(baseUrl);
   if (!response.ok) {
     throw new Error('Failed to fetch posts.')
   }
   return response.json();
-} */
+}
 
 export async function fetchPosts() {
   const { data } = await axios.get(baseUrl)
@@ -33,31 +33,22 @@ export async function savePost(post: any) {
   }
 }
 
-export async function getPost(id: number) {
-  const response = await axios.get(
-    baseUrl + '/post/' + id
-  );
-  return response
-}
-
-/* export const addTodo = async (
-    formData: IPost
-  ): Promise<AxiosResponse<ApiDataType>> => {
+export const addTodo = async (formData: IPost): Promise<AxiosResponse<ApiDataType>> => {
     try {
-      const todo: Omit<IPost, "_id"> = {
+      const todo: Omit<IPost, "id"> = {
         title: formData.title,
         content: formData.content,
         authorEmail: formData.authorEmail,
       }
       const saveTodo: AxiosResponse = await axios.post(
-        baseUrl + "/add-todo",
+        baseUrl + "/create",
         todo
       )
       return saveTodo
     } catch (error: any) {
       throw new Error(error)
     }
-  } */
+  }
 /* 
   export const updateTodo = async (
     todo: IPost
@@ -75,13 +66,18 @@ export async function getPost(id: number) {
       throw new Error(error)
     }
   } */
+
+  export async function getPost(id: number): Promise<AxiosResponse> {
+    const response: AxiosResponse<ApiDataType> = await axios.get(
+      baseUrl + '/post/' + id
+    );
+    return response
+  }
   
-  export const deleteTodo = async (
-    _id: string
-  ): Promise<AxiosResponse> => {
+  export const deleteTodo = async (id: number): Promise<AxiosResponse> => {
     try {
       const deletedTodo: AxiosResponse<ApiDataType> = await axios.delete(
-        `${baseUrl}/delete-todo/${_id}`
+        `${baseUrl}/delete-todo/${id}`
       )
       return deletedTodo
     } catch (error:any) {
