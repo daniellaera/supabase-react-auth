@@ -19,7 +19,7 @@
 			  "password": "postgres"
 			}
 		],
-		"remote.containers.dotfiles.repository": "https://github.com/daniellaera/dotfiles.git",
+		"dotfiles.repository": "https://github.com/daniellaera/dotfiles.git",
 		"editor.codeActionsOnSave": {
 			"source.organizeImports": false
 		},
@@ -35,7 +35,7 @@
 		"prisma.prisma",
 		"ms-azuretools.vscode-docker",
 		"cweijan.vscode-postgresql-client2",
-		"jamesmaj.easy-icons"
+		"pkief.material-icon-theme"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
