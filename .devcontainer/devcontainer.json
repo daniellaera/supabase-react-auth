@@ -34,7 +34,8 @@
 		"esbenp.prettier-vscode",
 		"prisma.prisma",
 		"ms-azuretools.vscode-docker",
-		"cweijan.vscode-postgresql-client2"
+		"cweijan.vscode-postgresql-client2",
+		"jamesmaj.easy-icons"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
