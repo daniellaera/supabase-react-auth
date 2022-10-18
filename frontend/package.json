@@ -6,7 +6,7 @@
     "@chakra-ui/react": "^2.3.4",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
-    "@supabase/supabase-js": "^1.35.7",
+    "@supabase/supabase-js": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",

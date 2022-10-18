@@ -23,3 +23,12 @@ interface IPost {
     posts: IPost[]
   };
   
+interface ProtectedRouteProps {
+  children: ReactNode
+  session: any
+  signedIn: boolean
+}
+
+interface ProfilePageProps {
+  childToParent?: boolean;
+}

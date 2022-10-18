@@ -6,14 +6,31 @@ import { useMutation } from 'react-query';
 import axios, { AxiosResponse } from 'axios';
 import { addTodo } from '../api';
 import { title } from 'process';
+import { User, UserResponse } from '@supabase/supabase-js';
 
 function NewPostPage() {
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
+  const [user, setUser] = useState<User | null>();
 
-  const userEmail: string | undefined = supabaseClient.auth.user()?.email
+  useEffect(() => {
+    // declare the data fetching function
+    const fetchData = async () => {
+      const { data: { user } } = await supabaseClient.auth.getUser()
+      setUser(user)
+      console.log('user from useeffect', user)
+    }
+  
+    // call the function
+    fetchData()
+      // make sure to catch any error
+      .catch(console.error);
+  }, [])
 
-  const createTodo = (): Promise<AxiosResponse> => addTodo({title: postTitle, content: postContent, authorEmail: userEmail})
+  // const userEmail: string | undefined = supabaseClient.auth.getUser()?.email
+  
+
+  const createTodo = (): Promise<AxiosResponse> => addTodo({title: postTitle, content: postContent, authorEmail: user?.email})
 
   const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(createTodo, {
     onSuccess(res) { 

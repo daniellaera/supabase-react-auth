@@ -15,7 +15,6 @@ const PostDetailPage = () => {
   const fetchPost = (): Promise<AxiosResponse> => getPost(Number(id))
     
   const { data, isLoading, error, isError } = useQuery(['post'], fetchPost, {onSuccess(res) {
-      console.log('data->>><', data)
       setPost(res.data)
   },})
 

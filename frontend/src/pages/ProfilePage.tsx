@@ -14,6 +14,7 @@ import { Session } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import PersonalAvatar from '../components/PersonalAvatar';
 import { supabaseClient } from '../config/supabase-client';
+import eventBus from '../eventBus';
   
   const ProfilePage = () => {
     const [session, setSession] = useState<Session | null>();
@@ -30,7 +31,7 @@ import { supabaseClient } from '../config/supabase-client';
     async function getProfile() {
       try {
         setLoading(true);
-        const user = supabaseClient.auth.user();
+        const { data: { user } } = await supabaseClient.auth.getUser()
   
         let { data, error, status } = await supabaseClient
           .from('profiles')
@@ -57,7 +58,7 @@ import { supabaseClient } from '../config/supabase-client';
     async function updateProfile({ username, website, avatar_url }: any) {
       try {
         setLoading(true);
-        const user = supabaseClient.auth.user();
+        const { data: { user } } = await supabaseClient.auth.getUser()
   
         const updates = {
           id: user?.id,
@@ -83,6 +84,8 @@ import { supabaseClient } from '../config/supabase-client';
           duration: 3000,
           isClosable: true
         });
+        
+        eventBus.dispatch("profileUpdated", true );
       } catch (error: any) {
         alert(error.message);
       } finally {
