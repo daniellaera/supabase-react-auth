@@ -19,7 +19,7 @@
 			  "password": "postgres"
 			}
 		],
-		"dotfiles.repository": "https://github.com/daniellaera/dotfiles.git",
+		"dotfiles.repository": "git@github.com:daniellaera/dotfiles.git",
 		"editor.codeActionsOnSave": {
 			"source.organizeImports": false
 		},
