@@ -21,7 +21,7 @@ import { Select, CreatableSelect, AsyncSelect, OptionBase, GroupBase } from 'cha
 
 const mappedColourOptions = pickListOptions.map(option => ({
   ...option,
-  colorScheme: option.value
+  color: option.color
 }));
 
 const ProfilePage = () => {

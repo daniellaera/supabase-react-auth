@@ -1,8 +1,17 @@
 export const pickListOptions = [
-  { value: 'blue', label: 'Blue', color: '#0052CC' },
-  { value: 'purple', label: 'Purple', color: '#5243AA' },
-  { value: 'red', label: 'Red', color: '#FF5630' },
-  { value: 'orange', label: 'Orange', color: '#FF8B00' },
-  { value: 'yellow', label: 'Yellow', color: '#FFC400' },
-  { value: 'green', label: 'Green', color: '#36B37E' }
+  { value: 'merd', label: 'Merd', color: '#DA70D6' },
+  { value: 'purple', label: 'Purple', color: '' },
+  { value: 'red', label: 'Red', color: '' },
+  { value: 'orange', label: 'Orange', color: '' },
+  { value: 'yellow', label: 'Yellow', color: '' },
+  { value: 'green', label: 'Green', color: '' }
 ];
+
+/* pickListOptions.forEach(obj => {
+  let letters = '0123456789ABCDEF';
+let color = '';
+for (let i = 0; i < 6; i++) {
+  color += '#' + Math.random().toString(16).substr(-6);
+}
+  obj.color = color
+  }) */
