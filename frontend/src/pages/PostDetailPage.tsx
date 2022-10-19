@@ -25,7 +25,6 @@ const PostDetailPage = () => {
     return <div>Error! {(error as Error).message}</div>
   }
 
-
   return (
     <>
       {isLoading && <p>Loading post...</p>}

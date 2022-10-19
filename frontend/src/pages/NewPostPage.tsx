@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NewPostForm from '../components/NewPostForm';
 import { supabaseClient } from '../config/supabase-client';
 import { useMutation } from 'react-query';
 import axios, { AxiosResponse } from 'axios';
 import { addTodo } from '../api';
-import { title } from 'process';
-import { User, UserResponse } from '@supabase/supabase-js';
+import { User } from '@supabase/supabase-js';
 
 function NewPostPage() {
   const [postTitle, setPostTitle] = useState("");
@@ -18,7 +16,6 @@ function NewPostPage() {
     const fetchData = async () => {
       const { data: { user } } = await supabaseClient.auth.getUser()
       setUser(user)
-      console.log('user from useeffect', user)
     }
   
     // call the function
