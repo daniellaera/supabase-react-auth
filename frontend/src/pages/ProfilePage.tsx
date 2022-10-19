@@ -21,7 +21,7 @@ import { Select, CreatableSelect, AsyncSelect, OptionBase, GroupBase } from 'cha
 
 const mappedColourOptions = pickListOptions.map(option => ({
   ...option,
-  color: option.color
+  colorScheme: option.color
 }));
 
 const ProfilePage = () => {
@@ -33,15 +33,18 @@ const ProfilePage = () => {
   const toast = useToast();
 
   useEffect(() => {
-    getProfile();
-  }, [session]);
+    const getSession = async () => {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      if (session) getProfile();
+    }
+    getSession();
+  }, []);
 
   async function getProfile() {
     try {
       setLoading(true);
-      const {
-        data: { user }
-      } = await supabaseClient.auth.getUser();
+      const { data: { user } } = await supabaseClient.auth.getUser();
 
       let { data, error, status } = await supabaseClient
         .from('profiles')
@@ -167,7 +170,7 @@ const ProfilePage = () => {
               />
             </FormControl>
           </Stack>
-          <FormControl p={4}>
+          {/* <FormControl p={4}>
             <FormLabel>
               Select programming languages that you like most
             </FormLabel>
@@ -178,26 +181,28 @@ const ProfilePage = () => {
               placeholder="Pick some languages ..."
               closeMenuOnSelect={false}
             />
+          </FormControl> */}
+          <Stack spacing={4} p={4}>
+          <FormControl>
+            <FormLabel>Select programming languages that you like most</FormLabel>
+            <AsyncSelect
+              isMulti
+              name="colors"
+              options={mappedColourOptions}
+              placeholder="ex: Java, GoLang"
+              closeMenuOnSelect={false}
+              size="md"
+              loadOptions={(inputValue, callback) => {
+                setTimeout(() => {
+                  const values = mappedColourOptions.filter((i) =>
+                    i.label.toLowerCase().includes(inputValue.toLowerCase())
+                  );
+                  callback(values);
+                }, 3000);
+              }}
+            />
           </FormControl>
-          <FormControl p={4}>
-      <FormLabel>Async Select</FormLabel>
-      <AsyncSelect
-        isMulti
-        name="colors"
-        options={mappedColourOptions}
-        placeholder="Select some colors..."
-        closeMenuOnSelect={false}
-        size="md"
-        loadOptions={(inputValue, callback) => {
-          setTimeout(() => {
-            const values = mappedColourOptions.filter((i) =>
-              i.label.toLowerCase().includes(inputValue.toLowerCase())
-            );
-            callback(values);
-          }, 3000);
-        }}
-      />
-    </FormControl>
+          </Stack>
           <Stack mt={8} direction={'row'} spacing={4}>
             <Button
               onClick={() => supabaseClient.auth.signOut()}
