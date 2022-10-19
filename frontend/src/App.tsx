@@ -14,18 +14,18 @@ import ProfilePage from './pages/ProfilePage';
 import WelcomePage from './pages/WelcomePage';
 
 export const App = () => {
-  const session = supabaseClient.auth.getSession()
-  const [signedIn, setSignedIn] = useState(false);
+  const session = supabaseClient.auth.getSession();
+  const [signedIn, setSignedIn] = useState(true);
 
   supabaseClient.auth.onAuthStateChange((event, session) => {
-      //console.log(event, session)
-      if (event === 'SIGNED_OUT') {
-        setSignedIn(false)
-      }
-      if (event === 'SIGNED_IN') {
-        setSignedIn(true)
-      } 
-  })
+    //console.log(event, session)
+    if (event === 'SIGNED_OUT') {
+      setSignedIn(false);
+    }
+    if (event === 'SIGNED_IN') {
+      setSignedIn(true);
+    }
+  });
 
   return (
     <ChakraProvider theme={theme}>

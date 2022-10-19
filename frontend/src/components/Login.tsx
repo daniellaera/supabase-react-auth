@@ -105,7 +105,7 @@ const Login = () => {
                   handleLogin(email);
                 }}
                 isLoading={loading}
-                loadingText="Signing in ..."
+                loadingText="Sending magic link ..."
                 colorScheme="teal"
                 spinnerPlacement="start"
                 bg={'blue.400'}
