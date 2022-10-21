@@ -57,3 +57,4 @@ npm run test
 ```
 npm run dev
 ```
+Adding new field/s in schema.prisma, run ex: `prisma migrate dev --name add_public_field`

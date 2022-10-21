@@ -10,6 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Profile {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  username String
+  website String
+  authorEmail String
+  isPublic  Boolean    @default(false)
+}
+
 model Post {
   id          Int       @id @default(autoincrement())
   createdAt   DateTime  @default(now())

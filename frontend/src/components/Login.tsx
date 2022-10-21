@@ -100,6 +100,7 @@ const Login = () => {
             </FormControl>
             <Stack spacing={4}>
               <Button
+              disabled={email === ''}
                 onClick={e => {
                   e.preventDefault();
                   handleLogin(email);

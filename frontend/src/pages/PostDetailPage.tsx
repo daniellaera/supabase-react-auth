@@ -16,6 +16,7 @@ const PostDetailPage = () => {
     
   const { data, isLoading, error, isError } = useQuery(['post'], fetchPost, {onSuccess(res) {
       setPost(res.data)
+      console.log('post here', post)
   },})
 
   if (isLoading) {

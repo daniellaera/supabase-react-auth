@@ -1,10 +1,26 @@
-import { Avatar, Button } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, keyframes } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '../config/supabase-client';
 
-const PersonalAvatar = ({ url, onUpload, size }: any) => {
+const PersonalAvatar = ({ url, onUpload }: any) => {
   const [avatarUrl, setAvatarUrl] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
+
+  const size = '96px';
+  const color = 'teal';
+
+  const pulseRing = keyframes`
+	0% {
+    transform: scale(0.33);
+  }
+  40%,
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+  `;
 
   useEffect(() => {
     if (url) downloadImage(url);
@@ -51,45 +67,44 @@ const PersonalAvatar = ({ url, onUpload, size }: any) => {
   }
 
   return (
-    <div>
-      {avatarUrl ? (
-        <Avatar
-          size={size}
-          src={avatarUrl}
-          mb={4}
-          pos={'relative'}
-          _after={{
-            content: '""',
-            w: 4,
-            h: 4,
-            bg: 'green.300',
-            border: '2px solid white',
-            rounded: 'full',
-            pos: 'absolute',
-            bottom: 0,
-            right: 3
-          }}
-        />
-      ) : (
-        <Avatar
-          size={'2xl'}
-          src={avatarUrl}
-          mb={4}
-          pos={'relative'}
-          _after={{
-            content: '""',
-            w: 4,
-            h: 4,
-            bg: 'green.300',
-            border: '2px solid white',
-            rounded: 'full',
-            pos: 'absolute',
-            bottom: 0,
-            right: 3
-          }}
-        />
-      )}
-      <div>
+    <>
+      <Flex
+        justifyContent="center"
+        alignItems="center"
+        h="216px"
+        w="full"
+        overflow="hidden">
+        <Box
+          as="div"
+          position="relative"
+          w={size}
+          h={size}
+          _before={{
+            content: "''",
+            position: 'relative',
+            display: 'block',
+            width: '300%',
+            height: '300%',
+            boxSizing: 'border-box',
+            marginLeft: '-100%',
+            marginTop: '-100%',
+            borderRadius: '50%',
+            bgColor: color,
+            animation: `2.25s ${pulseRing} cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite`,
+          }}>
+          <Avatar
+            src={avatarUrl}
+            size="full"
+            position="absolute"
+            top={0}
+          /></Box>
+
+      </Flex>
+      <Box
+        textAlign={
+          'center'
+        }
+        overflow="hidden">
         <Button
           size="sm"
           flex={1}
@@ -116,8 +131,8 @@ const PersonalAvatar = ({ url, onUpload, size }: any) => {
           onChange={uploadAvatar}
           disabled={uploading}
         />
-      </div>
-    </div>
+      </Box>
+    </>
   );
 };
 

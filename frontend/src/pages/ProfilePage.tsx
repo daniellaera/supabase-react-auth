@@ -6,23 +6,22 @@ import {
   FormControl,
   FormLabel,
   Input,
+  keyframes,
   Stack,
   Text,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import PersonalAvatar from '../components/PersonalAvatar';
 import { pickListOptions } from '../config/pickListOptions';
 import { supabaseClient } from '../config/supabase-client';
 import eventBus from '../eventBus';
 import { Select, CreatableSelect, AsyncSelect, OptionBase, GroupBase } from 'chakra-react-select';
+import ProfileDetail from '../components/ProfileDetail';
 
-const mappedColourOptions = pickListOptions.map(option => ({
-  ...option,
-  colorScheme: option.color
-}));
+
 
 const ProfilePage = () => {
   const [session, setSession] = useState<Session | null>();
@@ -31,29 +30,54 @@ const ProfilePage = () => {
   const [website, setWebsite] = useState(null);
   const [avatar_url, setAvatarUrl] = useState(null);
   const toast = useToast();
+  const [user, setUser] = useState<User | null>();
 
   useEffect(() => {
-    const getSession = async () => {
+    const setData = async () => {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw error;
-      if (session) getProfile();
-    }
-    getSession();
+      setSession(session);
+      //console.log('i kno session', session)
+    };
+
+    setData();
   }, []);
 
-  async function getProfile() {
+  useEffect(() => {
+    if (session) {
+      const setUserData = async () => {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        setUser(user)
+      }
+      setUserData()
+    }
+  }, [session])
+
+  useEffect(() => {
+    if (user) {
+      setProfile()
+    }
+  }, [user])
+
+  const setProfile = async () => {
     try {
       setLoading(true);
-      const { data: { user } } = await supabaseClient.auth.getUser();
 
-      let { data, error, status } = await supabaseClient
+      const { data, error, status } = await supabaseClient
         .from('profiles')
         .select(`username, website, avatar_url`)
         .eq('id', user?.id)
         .single();
 
-      if (error && status !== 406) {
-        throw error;
+      if (error && status === 406) {
+        toast({
+          title: 'No profile yet',
+          position: 'top',
+          description: 'Create your profile',
+          status: 'info',
+          duration: 5000,
+          isClosable: true
+        });
       }
 
       if (data) {
@@ -110,67 +134,21 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <Flex minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50', 'gray.800')}>
-        <Box
-          maxW={'445px'}
-          w={'full'}
-          bg={useColorModeValue('white', 'gray.900')}
-          boxShadow={'2xl'}
-          rounded={'lg'}
-          p={6}
-          textAlign={'center'}
-          justifyItems={'center'}
-          justifyContent={'center'}>
-          <PersonalAvatar
-            size={'2xl'}
-            url={avatar_url}
-            onUpload={(url: any) => {
-              setAvatarUrl(url);
-              updateProfile({ username, website, avatar_url: url });
-            }}
-          />
-          <Text fontSize={'sm'} fontWeight={500} color={'gray.500'} mb={4}>
-            {session?.user?.email}
-          </Text>
-          <Stack spacing={4} p={4}>
-            <FormControl>
-              <FormLabel>Username</FormLabel>
-              <Input
-                type={'text'}
-                value={username || ''}
-                onChange={(e: any) => setUsername(e.target.value)}
-                placeholder={username || 'username'}
-                color={useColorModeValue('gray.800', 'gray.200')}
-                bg={useColorModeValue('gray.100', 'gray.600')}
-                rounded={'full'}
-                border={0}
-                _focus={{
-                  bg: useColorModeValue('gray.200', 'gray.800'),
-                  outline: 'none'
-                }}
-              />
-            </FormControl>
-          </Stack>
-          <Stack spacing={4} p={4}>
-            <FormControl>
-              <FormLabel>Website</FormLabel>
-              <Input
-                type={'text'}
-                value={website || ''}
-                onChange={(e: any) => setWebsite(e.target.value)}
-                placeholder={website || 'website'}
-                color={useColorModeValue('gray.800', 'gray.200')}
-                bg={useColorModeValue('gray.100', 'gray.600')}
-                rounded={'full'}
-                border={0}
-                _focus={{
-                  bg: useColorModeValue('gray.200', 'gray.800'),
-                  outline: 'none'
-                }}
-              />
-            </FormControl>
-          </Stack>
-          {/* <FormControl p={4}>
+
+
+      <PersonalAvatar
+        url={avatar_url}
+        onUpload={(url: any) => {
+          setAvatarUrl(url);
+          updateProfile({ username, website, avatar_url: url });
+        }}
+      />
+      <Box textAlign={'center'}>
+        <Text fontSize={'sm'} fontWeight={500} color={'gray.500'} mb={4}>
+          {session?.user?.email}
+        </Text></Box>
+      <ProfileDetail />
+      {/* <FormControl p={4}>
             <FormLabel>
               Select programming languages that you like most
             </FormLabel>
@@ -182,59 +160,8 @@ const ProfilePage = () => {
               closeMenuOnSelect={false}
             />
           </FormControl> */}
-          <Stack spacing={4} p={4}>
-          <FormControl>
-            <FormLabel>Select programming languages that you like most</FormLabel>
-            <AsyncSelect
-              isMulti
-              name="colors"
-              options={mappedColourOptions}
-              placeholder="ex: Java, GoLang"
-              closeMenuOnSelect={false}
-              size="md"
-              loadOptions={(inputValue, callback) => {
-                setTimeout(() => {
-                  const values = mappedColourOptions.filter((i) =>
-                    i.label.toLowerCase().includes(inputValue.toLowerCase())
-                  );
-                  callback(values);
-                }, 3000);
-              }}
-            />
-          </FormControl>
-          </Stack>
-          <Stack mt={8} direction={'row'} spacing={4}>
-            <Button
-              onClick={() => supabaseClient.auth.signOut()}
-              flex={1}
-              fontSize={'sm'}
-              rounded={'full'}
-              _focus={{
-                bg: 'gray.200'
-              }}>
-              Logout
-            </Button>
-            <Button
-              isLoading={loading}
-              loadingText="Updating ..."
-              onClick={() => updateProfile({ username, website, avatar_url })}
-              flex={1}
-              fontSize={'sm'}
-              rounded={'full'}
-              bg={'green.400'}
-              color={'white'}
-              boxShadow={'0 5px 20px 0px rgb(72 187 120 / 43%)'}
-              _hover={{
-                bg: 'green.500'
-              }}
-              _focus={{
-                bg: 'green.500'
-              }}>
-              {loading || 'Update'}
-            </Button>
-          </Stack>
-        </Box>
-      </Flex>
+
+
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { ChakraProvider, theme } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Invoices from './components/Invoices';
 import Login from './components/Login';
@@ -15,7 +15,7 @@ import WelcomePage from './pages/WelcomePage';
 
 export const App = () => {
   const session = supabaseClient.auth.getSession();
-  const [signedIn, setSignedIn] = useState(true);
+  const [signedIn, setSignedIn] = useState<boolean>(true);
 
   supabaseClient.auth.onAuthStateChange((event, session) => {
     //console.log(event, session)

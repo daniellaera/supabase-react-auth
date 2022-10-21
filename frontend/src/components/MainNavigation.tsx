@@ -30,7 +30,16 @@ const MainNavigation = () => {
   const [username, setUsername] = useState<string | undefined>();
 
   useEffect(() => {
+    // we listen here if someone cleans the storage in the browser
+    // so we push him back and logout
+    // check: https://stackoverflow.com/questions/56660153/how-to-listen-to-localstorage-value-changes-in-react
+    const handleLocalStorage = () => {
+      window.addEventListener('storage', (event) => {
+        if (event) supabaseClient.auth.signOut()
+      })
+    }
     if (session) getAvatarUrl();
+    handleLocalStorage()
   }, [session]);
 
   useEffect(() => {
