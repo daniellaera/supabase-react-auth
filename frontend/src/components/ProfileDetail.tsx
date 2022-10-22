@@ -1,14 +1,14 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, Flex, FormControl, FormLabel, Input, Stack, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, Flex, FormControl, FormLabel, HStack, Input, Stack, Tag, TagLabel, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
 import { Session, User } from '@supabase/supabase-js';
 import axios, { AxiosResponse } from 'axios';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { addProfile, getProfileByAuthorEmail, profileUrl, saveProfile } from '../api';
 import { supabaseClient } from '../config/supabase-client';
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { FaAddressBook, FaCheck } from 'react-icons/fa';
-import { AsyncSelect } from 'chakra-react-select';
+import { AsyncSelect, MultiValue, Select } from 'chakra-react-select';
 import { pickListOptions } from '../config/pickListOptions';
 
 const mappedColourOptions = pickListOptions.map(option => ({
@@ -16,13 +16,19 @@ const mappedColourOptions = pickListOptions.map(option => ({
   colorScheme: option.color
 }));
 
-const ProfileDetail = () => {
+interface Props {
+  isPublished?: boolean;
+  childToParent(success: boolean): any;
+}
+
+const ProfileDetail = ({ childToParent }: Props) => {
   const [username, setUsername] = useState<string>('');
+  const [languages, setLanguages] = useState<IProgrammingLanguage[] | undefined>();
   const [website, setWebsite] = useState<string>('');
+  const [isPublic, setIsPublic] = useState<boolean>();
+  const [isEditing, setIsEditing] = useState<boolean>();
   const [profileId, setProfileId] = useState<number>()
-  //const [email, setEmail] = useState<string | undefined>('');
   const [user, setUser] = useState<User | null>();
-  const [profile, setProfile] = useState<any>()
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -50,12 +56,25 @@ const ProfileDetail = () => {
         setUsername(res.username)
         setWebsite(res.website)
         setProfileId(res.id)
+        childToParent(res.isPublic ? true : false);
+        setIsPublic(res.isPublic)
+        res.programmingLanguages.forEach(obj => {
+          let letters = ['red', 'green', 'blue', 'orange', 'yellow', 'purple', 'pink', 'cyan'];
+          let color = '';
+          for (let i = 0; i < 6; i++) {
+            color = letters[Math.floor(Math.random() * letters.length)];
+          }
+          obj.color = color;
+        });
+        setLanguages(res.programmingLanguages)
+        setIsEditing(false)
+        //console.log('fetchedColourOptions', fetchedColourOptions)
       }
     }
   });
 
   const createProfile = (): Promise<AxiosResponse> =>
-    addProfile({ website: website, username: username, authorEmail: user?.email });
+    addProfile({ website: website, username: username, authorEmail: user?.email, programmingLanguages: languages });
 
   const { isLoading: isPostingProfile, mutate: postProfile } = useMutation(createProfile, {
     onSuccess(res) {
@@ -76,7 +95,8 @@ const ProfileDetail = () => {
       website: website,
       username: username,
       authorEmail: user?.email,
-      id: profileId!
+      id: profileId!,
+      programmingLanguages: languages!
     };
     return await saveProfile(profile);
   }
@@ -94,6 +114,7 @@ const ProfileDetail = () => {
           duration: 3000,
           isClosable: true
         });
+        refetch()
       },
       onError: (err) => {
         console.log(err)
@@ -114,19 +135,36 @@ const ProfileDetail = () => {
     }
   }
 
-  return (
+  function handleLanguages(e: MultiValue<{ colorScheme: string; value: string; label: string; color: string; }>) {
+    let newParams: any[] = []
+    for (let i = 0; i < e.length; i += 1) {
+      const obje = e[i].value
+      newParams.push(obje)
+      setLanguages(newParams)
+      setIsEditing(true)
+    }
+  }
 
+  const emptyLanguages = () => {
+    setLanguages([])
+  }
+
+  useEffect(() => {
+    //console.log(languages?.map(i => i.color))
+  }, [languages])
+
+  return (
     <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
       <Accordion allowToggle={true}>
         <AccordionItem>
-          <AccordionButton _expanded={{ bg: 'tomato', color: 'white' }} onClick={() => refetch()}>
+          <AccordionButton _expanded={{ bgGradient: 'linear(to-r, teal.500, green.500)', color: 'white' }} onClick={() => refetch()}>
             <Box flex='1' textAlign='left'>
               Show profile
             </Box>
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel>
-          <Stack spacing={8} mx={'auto'} maxW={'lg'} py={6} px={6}>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={6} px={6}>
               <FormControl>
                 <FormLabel>Username</FormLabel>
                 <Input
@@ -168,6 +206,8 @@ const ProfileDetail = () => {
               <FormControl pb={10}>
                 <FormLabel>Select programming languages that you like most</FormLabel>
                 <AsyncSelect
+                  onChange={(e) => handleLanguages(e)}
+                  onMenuOpen={emptyLanguages}
                   isMulti
                   name="colors"
                   options={mappedColourOptions}
@@ -177,78 +217,80 @@ const ProfileDetail = () => {
                   loadOptions={(inputValue, callback) => {
                     setTimeout(() => {
                       const values = mappedColourOptions.filter((i) =>
-                        i.label.toLowerCase().includes(inputValue.toLowerCase())
+                        i.label.toLowerCase().includes(inputValue.toLowerCase()),
                       );
                       callback(values);
                     }, 3000);
                   }}
                 />
               </FormControl>
+              <HStack spacing={4}>
+                {!isEditing && languages?.map((language, index) => (
+                  <Tag  key={index} variant='subtle' colorScheme={language.color}>
+                    <TagLabel>{language.language}</TagLabel>
+                  </Tag>
+                ))}
+              </HStack>
             </Stack>
             <Stack spacing={8} mx={'auto'} maxW={'xl'} py={12} px={6} direction={['column', 'row']}>
-            <Button
-            onClick={onOpen}
-            leftIcon={<FaAddressBook />}
-              fontFamily={'heading'}
-              w={'full'}
-              bgGradient="linear(to-r, red.400,pink.400)"
-              color={'white'}
-              _hover={{
-                bgGradient: 'linear(to-r, red.400,pink.400)',
-                boxShadow: 'xl',
-              }}>
-              Publish profile
-            </Button>
-            <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Delete Customer
-            </AlertDialogHeader>
+              {!isPublic && <Button
+                onClick={onOpen}
+                leftIcon={<FaAddressBook />}
+                fontFamily={'heading'}
+                w={'full'}
+                bgGradient="linear(to-r, red.400,pink.400)"
+                color={'white'}
+                _hover={{
+                  bgGradient: 'linear(to-r, red.400,pink.400)',
+                  boxShadow: 'xl',
+                }}>
+                Publish profile
+              </Button>}
+              <AlertDialog
+                isOpen={isOpen}
+                leastDestructiveRef={cancelRef}
+                onClose={onClose}
+              >
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                      Delete Customer
+                    </AlertDialogHeader>
 
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
+                    <AlertDialogBody>
+                      Are you sure? You can't undo this action afterwards.
+                    </AlertDialogBody>
 
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+                    <AlertDialogFooter>
+                      <Button ref={cancelRef} onClick={onClose}>
+                        Cancel
+                      </Button>
+                      <Button colorScheme='red' onClick={onClose} ml={3}>
+                        Delete
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
+              <Button
+                leftIcon={<FaCheck />}
+                isLoading={isPostingProfile || isUpdatingProfile}
+                loadingText={profileId ? `Updating` : `Creating`}
+                onClick={postData}
+                disabled={!username || !website}
+                bg={'blue.400'}
+                color={'white'}
+                w="full"
+                _hover={{
+                  bg: 'blue.500',
+                }}>
+                {profileId ? `Update` : `Save`}
               </Button>
-              <Button colorScheme='red' onClick={onClose} ml={3}>
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-          <Button
-          leftIcon={<FaCheck />}
-          isLoading={isPostingProfile || isUpdatingProfile}
-          loadingText={profileId ? `Updating` : `Creating`}
-          onClick={postData}
-          disabled={!username || !website}
-            bg={'blue.400'}
-            color={'white'}
-            w="full"
-            _hover={{
-              bg: 'blue.500',
-            }}>
-            {profileId ? `Update` : `Save`}
-          </Button>
-        </Stack>
+            </Stack>
           </AccordionPanel>
         </AccordionItem>
-
       </Accordion>
-
-
-
     </Container>
-
   );
 };
 

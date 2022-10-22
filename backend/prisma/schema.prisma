@@ -11,13 +11,22 @@ datasource db {
 }
 
 model Profile {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  username String
-  website String
-  authorEmail String
-  isPublic  Boolean    @default(false)
+  id                   Int                    @id @default(autoincrement())
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  username             String
+  website              String
+  authorEmail          String
+  isPublic             Boolean                @default(false)
+  programmingLanguages ProgrammingLanguages[]
+}
+
+model ProgrammingLanguages {
+  id        Int      @id @default(autoincrement())
+  language  String
+  createdAt DateTime @default(now())
+  profileId Int
+  Profile   Profile  @relation(fields: [profileId], references: [id])
 }
 
 model Post {

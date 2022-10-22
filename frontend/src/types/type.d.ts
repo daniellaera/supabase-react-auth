@@ -8,6 +8,14 @@ interface IPost {
   updatedAt?: string;
 }
 
+interface IProgrammingLanguage {
+  createdAt?: string;
+  id: number;
+  language: string;
+  profileId: number;
+  color?: string;
+}
+
 interface IProfile {
   id: number;
   authorEmail: string | undefined;
@@ -16,6 +24,8 @@ interface IProfile {
   status?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  isPublic?: boolean;
+  programmingLanguages: IProgrammingLanguage[];
 }
 
 interface TodoProps {

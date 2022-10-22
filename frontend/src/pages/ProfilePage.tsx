@@ -1,24 +1,14 @@
 import {
+  Badge,
   Box,
-  Button,
-  Code,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  keyframes,
-  Stack,
   Text,
-  useColorModeValue,
   useToast
 } from '@chakra-ui/react';
 import { Session, User } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PersonalAvatar from '../components/PersonalAvatar';
-import { pickListOptions } from '../config/pickListOptions';
 import { supabaseClient } from '../config/supabase-client';
 import eventBus from '../eventBus';
-import { Select, CreatableSelect, AsyncSelect, OptionBase, GroupBase } from 'chakra-react-select';
 import ProfileDetail from '../components/ProfileDetail';
 
 
@@ -31,6 +21,7 @@ const ProfilePage = () => {
   const [avatar_url, setAvatarUrl] = useState(null);
   const toast = useToast();
   const [user, setUser] = useState<User | null>();
+  const [isPublic, setIsPublic] = useState<boolean>();
 
   useEffect(() => {
     const setData = async () => {
@@ -132,6 +123,13 @@ const ProfilePage = () => {
     }
   }
 
+  const handleCallBack = useCallback(
+    (booleanFromChild: boolean) => {
+      setIsPublic(booleanFromChild)
+    },
+    []
+  );
+
   return (
     <div>
 
@@ -146,8 +144,12 @@ const ProfilePage = () => {
       <Box textAlign={'center'}>
         <Text fontSize={'sm'} fontWeight={500} color={'gray.500'} mb={4}>
           {session?.user?.email}
-        </Text></Box>
-      <ProfileDetail />
+        </Text>
+        <Badge ml='1' colorScheme={isPublic ? `green` : `gray`}>
+          {isPublic ? `Public` : `Private`}
+        </Badge>
+      </Box>
+      <ProfileDetail childToParent={handleCallBack} />
       {/* <FormControl p={4}>
             <FormLabel>
               Select programming languages that you like most

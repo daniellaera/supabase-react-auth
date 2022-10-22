@@ -54,7 +54,8 @@ export const addProfile = async (formData: any): Promise<AxiosResponse<ApiDataTy
     const profile: Omit<IProfile, 'id'> = {
       website: formData.website,
       username: formData.username,
-      authorEmail: formData.authorEmail
+      authorEmail: formData.authorEmail,
+      programmingLanguages: formData.programmingLanguages
     };
     const saveProfile: AxiosResponse = await axios.post(profileUrl + '/create', profile);
     return saveProfile;
