@@ -19,7 +19,7 @@ export const pickListOptions = [
 pickListOptions.forEach(obj => {
   let letters = ['red', 'green', 'blue', 'orange', 'yellow', 'purple', 'pink', 'cyan'];
   let color = '';
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 8; i++) {
     color = letters[Math.floor(Math.random() * letters.length)];
   }
   obj.color = color;

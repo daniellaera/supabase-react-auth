@@ -1,15 +1,15 @@
 import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, Flex, FormControl, FormLabel, HStack, Input, Progress, Stack, Tag, TagLabel, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
-import { Session, User } from '@supabase/supabase-js';
-import axios, { AxiosResponse } from 'axios';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { User } from '@supabase/supabase-js';
+import { AxiosResponse } from 'axios';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
-import { addProfile, getProfileByAuthorEmail, profileUrl, publishProfile, saveProfile } from '../api';
+import { addProfile, getProfileByAuthorEmail, publishProfile, saveProfile } from '../api';
 import { supabaseClient } from '../config/supabase-client';
-import { AddIcon, EditIcon, MinusIcon } from '@chakra-ui/icons'
+import { EditIcon} from '@chakra-ui/icons'
 import { FaAddressBook, FaCheck } from 'react-icons/fa';
 import { AsyncSelect, MultiValue, Select } from 'chakra-react-select';
 import { pickListOptions } from '../config/pickListOptions';
+import { getRandomColor } from '../utils/functions';
 
 const mappedColourOptions = pickListOptions.map(option => ({
   ...option,
@@ -186,12 +186,10 @@ const ProfileDetail = ({ childToParent }: Props) => {
 
   const editLanguage = () => {
     setNewParams([])
-
     setIsEditingLanguage(true)
   }
 
   function handleUserNameChange(e: any) {
-    //setIsEditingLanguage(false)
     setUsername(e.target.value);
   }
 
@@ -248,12 +246,11 @@ const ProfileDetail = ({ childToParent }: Props) => {
                 />
               </FormControl>
             </Stack>
-            <Stack spacing={8} mx={'auto'} maxW={'xl'} py={12} px={6}>
+            <Stack spacing={8} mx={'auto'} maxW={'lg'} py={6} px={6}>
               {isEditingLanguage ? (<FormControl pb={10}>
                 <FormLabel>Select programming languages that you like most</FormLabel>
                 <AsyncSelect
                   onChange={(e) => handleLanguages(e)}
-                  //onMenuOpen={emptyLanguages}
                   isMulti
                   name="colors"
                   options={mappedColourOptions}
@@ -273,7 +270,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
                 <HStack spacing={4}>
                   {Object.entries(newParams)
                     .map(
-                      ([key, value]) => (<Tag key={key}><TagLabel>{value}</TagLabel></Tag>)
+                      ([key, value]) => (<Tag colorScheme={getRandomColor()} key={key}><TagLabel>{value}</TagLabel></Tag>)
                     )
                   }
                   <Button onClick={() => editLanguage()} leftIcon={<EditIcon />} colorScheme='pink' variant='ghost'>
