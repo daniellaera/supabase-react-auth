@@ -73,6 +73,8 @@ const ProfileDetail = ({ childToParent }: Props) => {
         setLanguages(newParams)
 
         setIsEditingLanguage(false)
+      } else {
+        setIsEditingLanguage(true)
       }
     },
     onError: () => {
@@ -189,7 +191,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
   }
 
   function handleUserNameChange(e: any) {
-    setIsEditingLanguage(false)
+    //setIsEditingLanguage(false)
     setUsername(e.target.value);
   }
 
