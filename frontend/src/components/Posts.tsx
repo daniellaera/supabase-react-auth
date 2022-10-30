@@ -13,14 +13,7 @@ function Posts({ posts }: any) {
                 <Center key={i} py={6}>
                     <Box maxW={'800px'} w={'full'} bg={color} boxShadow={'2xl'} rounded={'md'} p={6} overflow={'hidden'}>
                         <Stack>
-                            <Text
-                                color={'green.500'}
-                                textTransform={'uppercase'}
-                                fontWeight={800}
-                                fontSize={'sm'}
-                                letterSpacing={1.1}>
-                                Post
-                            </Text>
+                            
                             <Text color={'gray.500'}>{title}</Text>
                             <Divider />
                             <Text color={'gray.500'}>{content}</Text>

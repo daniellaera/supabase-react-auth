@@ -5,11 +5,13 @@ import { useMutation } from 'react-query';
 import axios, { AxiosResponse } from 'axios';
 import { addTodo } from '../api';
 import { User } from '@supabase/supabase-js';
+import { useToast } from '@chakra-ui/react';
 
 function NewPostPage() {
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
   const [user, setUser] = useState<User | null>();
+  const toast = useToast();
 
   useEffect(() => {
     // declare the data fetching function
@@ -31,7 +33,15 @@ function NewPostPage() {
 
   const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(createTodo, {
     onSuccess(res) {
-      console.log('voici éa response', res)
+      toast({
+        title: 'Post created.',
+        position: 'top',
+        variant: 'subtle',
+        description: '',
+        status: 'success',
+        duration: 3000,
+        isClosable: true
+      });
     }
   })
 
