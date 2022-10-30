@@ -1,12 +1,12 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, Flex, FormControl, FormLabel, HStack, Input, Stack, Tag, TagLabel, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, Flex, FormControl, FormLabel, HStack, Input, Progress, Stack, Tag, TagLabel, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
 import { Session, User } from '@supabase/supabase-js';
 import axios, { AxiosResponse } from 'axios';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { addProfile, getProfileByAuthorEmail, profileUrl, saveProfile } from '../api';
+import { addProfile, getProfileByAuthorEmail, profileUrl, publishProfile, saveProfile } from '../api';
 import { supabaseClient } from '../config/supabase-client';
-import { AddIcon, MinusIcon } from '@chakra-ui/icons'
+import { AddIcon, EditIcon, MinusIcon } from '@chakra-ui/icons'
 import { FaAddressBook, FaCheck } from 'react-icons/fa';
 import { AsyncSelect, MultiValue, Select } from 'chakra-react-select';
 import { pickListOptions } from '../config/pickListOptions';
@@ -26,9 +26,11 @@ const ProfileDetail = ({ childToParent }: Props) => {
   const [languages, setLanguages] = useState<IProgrammingLanguage[] | undefined>();
   const [website, setWebsite] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>();
-  const [isEditing, setIsEditing] = useState<boolean>();
+  const [isEditingLanguage, setIsEditingLanguage] = useState<boolean>();
   const [profileId, setProfileId] = useState<number>()
   const [user, setUser] = useState<User | null>();
+  const [newParams, setNewParams] = useState<any[]>([]);
+
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -38,6 +40,9 @@ const ProfileDetail = ({ childToParent }: Props) => {
     const fetchUserData = async () => {
       const { data: { user } } = await supabaseClient.auth.getUser()
       setUser(user)
+
+      // we refetch here?
+      refetch()
     }
     // call the function
     fetchUserData()
@@ -50,7 +55,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
     return res.data;
   };
 
-  const { status, data, error, refetch } = useQuery(['profile'], fetchProfile, {
+  const { isFetching, data, error, refetch } = useQuery(['profile'], fetchProfile, {
     enabled: false, onSuccess(res: IProfile) {
       if (res != null) {
         setUsername(res.username)
@@ -58,19 +63,21 @@ const ProfileDetail = ({ childToParent }: Props) => {
         setProfileId(res.id)
         childToParent(res.isPublic ? true : false);
         setIsPublic(res.isPublic)
-        res.programmingLanguages.forEach(obj => {
-          let letters = ['red', 'green', 'blue', 'orange', 'yellow', 'purple', 'pink', 'cyan'];
-          let color = '';
-          for (let i = 0; i < 6; i++) {
-            color = letters[Math.floor(Math.random() * letters.length)];
-          }
-          obj.color = color;
-        });
-        setLanguages(res.programmingLanguages)
-        setIsEditing(false)
-        //console.log('fetchedColourOptions', fetchedColourOptions)
+
+        if (res.programmingLanguages.length !== newParams.length) {
+          res.programmingLanguages.forEach(obj => {
+            newParams.push(obj.language)
+          })
+        }
+
+        setLanguages(newParams)
+
+        setIsEditingLanguage(false)
       }
-    }
+    },
+    onError: () => {
+      console.log(error)
+    },
   });
 
   const createProfile = (): Promise<AxiosResponse> =>
@@ -101,6 +108,32 @@ const ProfileDetail = ({ childToParent }: Props) => {
     return await saveProfile(profile);
   }
 
+  const postPublishProfile = async (): Promise<AxiosResponse> => {
+    return await publishProfile(profileId!);
+  }
+
+  const { isLoading: isPublishingProfile, mutate: publish } = useMutation(
+    postPublishProfile,
+    {
+      onSuccess: (res) => {
+        toast({
+          title: 'Profile published.',
+          position: 'top',
+          variant: 'subtle',
+          description: '',
+          status: 'success',
+          duration: 3000,
+          isClosable: true
+        });
+        refetch()
+      },
+      onError: (err) => {
+        console.log(err)
+      },
+      //onMutate: () => console.log('mutating')
+    }
+  );
+
   const { isLoading: isUpdatingProfile, mutate: updateProfile } = useMutation(
     postUpdateProfile,
     {
@@ -123,6 +156,11 @@ const ProfileDetail = ({ childToParent }: Props) => {
     }
   );
 
+  function publishMe() {
+    onClose()
+    publish();
+  }
+
   function postData() {
     try {
       if (profileId) {
@@ -141,23 +179,29 @@ const ProfileDetail = ({ childToParent }: Props) => {
       const obje = e[i].value
       newParams.push(obje)
       setLanguages(newParams)
-      setIsEditing(true)
     }
   }
 
-  const emptyLanguages = () => {
-    setLanguages([])
+  const editLanguage = () => {
+    setNewParams([])
+
+    setIsEditingLanguage(true)
   }
 
-  useEffect(() => {
-    //console.log(languages?.map(i => i.color))
-  }, [languages])
+  function handleUserNameChange(e: any) {
+    setIsEditingLanguage(false)
+    setUsername(e.target.value);
+  }
 
-  return (
+  const color = useColorModeValue('gray.800', 'gray.200')
+  const bgColor = useColorModeValue('gray.100', 'gray.600')
+  const bgColorFocus = useColorModeValue('gray.200', 'gray.800')
+
+  return !isFetching ? (
     <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
       <Accordion allowToggle={true}>
         <AccordionItem>
-          <AccordionButton _expanded={{ bgGradient: 'linear(to-r, teal.500, green.500)', color: 'white' }} onClick={() => refetch()}>
+          <AccordionButton _expanded={{ bgGradient: 'linear(to-r, teal.500, green.500)', color: 'white' }} >
             <Box flex='1' textAlign='left'>
               Show profile
             </Box>
@@ -170,14 +214,14 @@ const ProfileDetail = ({ childToParent }: Props) => {
                 <Input
                   type={'text'}
                   value={username || ''}
-                  onChange={(e: any) => setUsername(e.target.value)}
+                  onChange={(e: any) => handleUserNameChange(e)}
                   placeholder={username || 'username'}
-                  color={useColorModeValue('gray.800', 'gray.200')}
-                  bg={useColorModeValue('gray.100', 'gray.600')}
+                  color={color}
+                  bg={bgColor}
                   rounded={'full'}
                   border={0}
                   _focus={{
-                    bg: useColorModeValue('gray.200', 'gray.800'),
+                    bg: bgColorFocus,
                     outline: 'none'
                   }}
                 />
@@ -191,23 +235,23 @@ const ProfileDetail = ({ childToParent }: Props) => {
                   value={website || ''}
                   onChange={(e: any) => setWebsite(e.target.value)}
                   placeholder={website || 'website'}
-                  color={useColorModeValue('gray.800', 'gray.200')}
-                  bg={useColorModeValue('gray.100', 'gray.600')}
+                  color={color}
+                  bg={bgColor}
                   rounded={'full'}
                   border={0}
                   _focus={{
-                    bg: useColorModeValue('gray.200', 'gray.800'),
+                    bg: bgColorFocus,
                     outline: 'none'
                   }}
                 />
               </FormControl>
             </Stack>
             <Stack spacing={8} mx={'auto'} maxW={'xl'} py={12} px={6}>
-              <FormControl pb={10}>
+              {isEditingLanguage ? (<FormControl pb={10}>
                 <FormLabel>Select programming languages that you like most</FormLabel>
                 <AsyncSelect
                   onChange={(e) => handleLanguages(e)}
-                  onMenuOpen={emptyLanguages}
+                  //onMenuOpen={emptyLanguages}
                   isMulti
                   name="colors"
                   options={mappedColourOptions}
@@ -223,14 +267,17 @@ const ProfileDetail = ({ childToParent }: Props) => {
                     }, 3000);
                   }}
                 />
-              </FormControl>
-              <HStack spacing={4}>
-                {!isEditing && languages?.map((language, index) => (
-                  <Tag  key={index} variant='subtle' colorScheme={language.color}>
-                    <TagLabel>{language.language}</TagLabel>
-                  </Tag>
-                ))}
-              </HStack>
+              </FormControl>) : (
+                <HStack spacing={4}>
+                  {Object.entries(newParams)
+                    .map(
+                      ([key, value]) => (<Tag key={key}><TagLabel>{value}</TagLabel></Tag>)
+                    )
+                  }
+                  <Button onClick={() => editLanguage()} leftIcon={<EditIcon />} colorScheme='pink' variant='ghost'>
+                    Edit
+                  </Button>
+                </HStack>)}
             </Stack>
             <Stack spacing={8} mx={'auto'} maxW={'xl'} py={12} px={6} direction={['column', 'row']}>
               {!isPublic && <Button
@@ -265,8 +312,12 @@ const ProfileDetail = ({ childToParent }: Props) => {
                       <Button ref={cancelRef} onClick={onClose}>
                         Cancel
                       </Button>
-                      <Button colorScheme='red' onClick={onClose} ml={3}>
-                        Delete
+                      <Button
+                        spinnerPlacement="start"
+                        isLoading={isPublishingProfile}
+                        colorScheme='blue'
+                        onClick={() => publishMe()} ml={3}>
+                        {isPublishingProfile || 'Publish'}
                       </Button>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -291,7 +342,9 @@ const ProfileDetail = ({ childToParent }: Props) => {
         </AccordionItem>
       </Accordion>
     </Container>
-  );
+  ) : (
+    <Progress size={'xs'} isIndeterminate />
+  )
 };
 
 export default ProfileDetail;

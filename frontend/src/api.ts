@@ -68,3 +68,8 @@ export async function saveProfile(profile: IProfile) {
   const response = await axios.put(`${profileUrl}/updateById/${profile.id}`, profile);
   return response
 }
+
+export async function publishProfile(profileId: number) {
+  const response = await axios.put(`${profileUrl}/publishProfile/${profileId}`);
+  return response
+}

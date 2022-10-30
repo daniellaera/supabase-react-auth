@@ -1,13 +1,13 @@
-import { Outlet } from "react-router-dom"
-import PostActions from "../components/PostActions"
+import { Outlet } from 'react-router-dom';
+import PostActions from '../components/PostActions';
 
 const PostLayout = () => {
-    return (
-        <>
-            <PostActions />
-            <Outlet />
-        </>
-    )
-}
+  return (
+    <>
+      <PostActions />
+      <Outlet />
+    </>
+  );
+};
 
-export default PostLayout
+export default PostLayout;

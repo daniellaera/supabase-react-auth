@@ -24,7 +24,7 @@ router.post(`/create`, async (req, res) => {
 
 router.put('/updateById/:profileId', async (req, res) => {
   const { profileId } = req.params;
-  const { username, website, programmingLanguages } = req.body;
+  const { username, website, programmingLanguages, isPublic } = req.body;
 
   // we delete first all record with profileId
   await prisma.$transaction([prisma.programmingLanguages.deleteMany({ where: { profileId: Number(profileId) } })]);
@@ -35,8 +35,9 @@ router.put('/updateById/:profileId', async (req, res) => {
     data: {
       username: username,
       website: website,
+      isPublic: isPublic,
       programmingLanguages: {
-        connectOrCreate: programmingLanguages.map((lang: string, id: number) => ({
+        connectOrCreate: programmingLanguages.map((lang: string) => ({
           create: { language: lang },
           where: { id: Number(profileId) },
         })),

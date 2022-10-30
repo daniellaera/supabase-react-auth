@@ -3,7 +3,8 @@ import { fetchPosts } from '../api';
 import { useQuery } from 'react-query'
 
 import Posts from '../components/Posts';
-import { Spinner } from '@chakra-ui/react';
+import { Button, Heading, Spinner, Stack, Text } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 
 function BlogPostsPage() {
   //const [error, setError] = useState();
@@ -34,12 +35,13 @@ function BlogPostsPage() {
   }, []); */
 
   return (
-    <>
-      <h1>Our Blog Posts</h1>
+    <Stack spacing={0} align={'center'}>
+      <Heading>Our Developers Speak</Heading>
+      <Text>We have been working with Developers around the world</Text>
       {isLoading && <p>Loading posts...</p>}
       {error && <p>{error}</p>}
       {!error && data && <Posts posts={data} />}
-    </>
+    </Stack>
   );
 }
 

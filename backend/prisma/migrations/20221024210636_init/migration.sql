@@ -6,8 +6,20 @@ CREATE TABLE "Profile" (
     "username" TEXT NOT NULL,
     "website" TEXT NOT NULL,
     "authorEmail" TEXT NOT NULL,
+    "isPublic" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Profile_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProgrammingLanguages" (
+    "id" SERIAL NOT NULL,
+    "language" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "profileId" INTEGER NOT NULL,
+
+    CONSTRAINT "ProgrammingLanguages_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -41,6 +53,9 @@ CREATE TABLE "Comment" (
 
     CONSTRAINT "Comment_pkey" PRIMARY KEY ("id")
 );
+
+-- AddForeignKey
+ALTER TABLE "ProgrammingLanguages" ADD CONSTRAINT "ProgrammingLanguages_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Like" ADD CONSTRAINT "Like_postId_fkey" FOREIGN KEY ("postId") REFERENCES "Post"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -10,6 +10,7 @@ import NewPostPage from './pages/NewPostPage';
 import PostDetailPage from './pages/PostDetailPage';
 import PostLayout from './pages/PostLayout';
 import PostPage from './pages/PostPage';
+import ProfileLayout from './pages/ProfileLayout';
 import ProfilePage from './pages/ProfilePage';
 import WelcomePage from './pages/WelcomePage';
 
@@ -46,14 +47,13 @@ export const App = () => {
               }
             />
             <Route path="/invoices" element={<Invoices />} />
-            <Route
-              path="/profile"
-              element={
+            <Route path="/profile" element={
                 <ProtectedRoute session={session} signedIn={signedIn}>
-                  <ProfilePage />
+                  <ProfileLayout />
                 </ProtectedRoute>
-              }
-            />
+              }>
+                <Route index element={<ProfilePage />} />
+            </Route>
             <Route path="/login" element={<Login />} />
           </Routes>
         </RootLayout>
