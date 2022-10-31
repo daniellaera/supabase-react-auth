@@ -53,3 +53,7 @@ interface ProtectedRouteProps {
 interface ProfilePageProps {
   childToParent?: boolean;
 }
+
+export interface ReadMoreButtonProps {
+  postId: number;
+}

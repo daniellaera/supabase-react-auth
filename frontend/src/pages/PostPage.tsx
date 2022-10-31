@@ -3,7 +3,7 @@ import { fetchPosts } from '../api';
 import { useQuery } from 'react-query'
 
 import Posts from '../components/Posts';
-import { Button, Heading, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Button, Heading, Progress, Spinner, Stack, Text } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 
 function BlogPostsPage() {
@@ -13,7 +13,7 @@ function BlogPostsPage() {
   const { data, error, isError, isLoading } = useQuery('posts', fetchPosts)
 
   if (isLoading) {
-    return <Spinner />
+    return <Progress size={'xs'} isIndeterminate />
   }
   if (isError) {
     return <div>Error! {(error as Error).message}</div>
