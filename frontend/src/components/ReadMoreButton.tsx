@@ -10,13 +10,13 @@ export const ReadmoreButton = ({ postId }: ReadMoreButtonProps) => {
           <Button
             flex={1}
             rounded="md"
-            bg={'blue.400'}
+            bg={'blue.500'}
             color={'white'}
-            boxShadow={'0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'}
+            boxShadow={'lg'}
             _hover={{
-              bg: 'blue.500',
+              bg: 'blue.400',
               transform: 'translateY(-2px)',
-              boxShadow: 'lg'
+              boxShadow: '0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'
             }}
             _focus={{
               bg: 'blue.500'

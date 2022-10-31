@@ -14,6 +14,7 @@ import {
 import moment from 'moment';
 import { truncate } from '../utils/functions';
 import { ReadmoreButton } from './ReadMoreButton';
+import LikeButton from './LikeButton';
 
 function Posts({ posts }: any) {
   const color = useColorModeValue('white', 'gray.900');
@@ -46,7 +47,7 @@ function Posts({ posts }: any) {
                   {/* <Text fontSize={'sm'} color={'gray.500'}>
                                     {likes?.length}
                                 </Text> */}
-                  {/* <LikeButton childToParent={handleClick} id={id} authorId={authorId} /> */}
+                  
                 </Stack>
                 <Stack spacing={0} align={'center'}>
                   {/* <Text fontSize={'sm'} color={'gray.500'}>
@@ -55,8 +56,11 @@ function Posts({ posts }: any) {
                   {/* <CommentButton id={id} comments={comments} /> */}
                 </Stack>
               </Stack>
-
+              <Stack justify={'end'} mt={8} direction={'row'} spacing={4}>
+              <LikeButton />
               <ReadmoreButton postId={id} />
+              </Stack>
+              
             </Box>
           </Center>
         ))}
