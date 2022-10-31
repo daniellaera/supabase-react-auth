@@ -6,6 +6,8 @@ const router = express.Router();
 router.post(`/create`, async (req, res) => {
   const { username, website, authorEmail, programmingLanguages } = req.body;
 
+  console.log(programmingLanguages)
+
   const result = await prisma.profile.create({
     data: {
       username,
@@ -14,7 +16,7 @@ router.post(`/create`, async (req, res) => {
       programmingLanguages: {
         connectOrCreate: programmingLanguages.map((lang: string, id: number) => ({
           create: { language: lang },
-          where: { id: id },
+          where: { language: lang },
         })),
       },
     },

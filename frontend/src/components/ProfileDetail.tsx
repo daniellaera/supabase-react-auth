@@ -3,11 +3,11 @@ import { User } from '@supabase/supabase-js';
 import { AxiosResponse } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { addProfile, getProfileByAuthorEmail, publishProfile, saveProfile } from '../api';
+import { createProfile, getProfileByAuthorEmail, publishProfile, saveProfile } from '../api';
 import { supabaseClient } from '../config/supabase-client';
-import { EditIcon} from '@chakra-ui/icons'
+import { EditIcon } from '@chakra-ui/icons'
 import { FaAddressBook, FaCheck } from 'react-icons/fa';
-import { AsyncSelect, MultiValue, Select } from 'chakra-react-select';
+import { AsyncSelect, MultiValue } from 'chakra-react-select';
 import { pickListOptions } from '../config/pickListOptions';
 import { getRandomColor } from '../utils/functions';
 
@@ -82,10 +82,17 @@ const ProfileDetail = ({ childToParent }: Props) => {
     },
   });
 
-  const createProfile = (): Promise<AxiosResponse> =>
-    addProfile({ website: website, username: username, authorEmail: user?.email, programmingLanguages: languages });
+  const postCreateProfile = async (): Promise<AxiosResponse> => {
+    const profile: Omit<IProfile, 'id'> = {
+      website: website,
+      username: username,
+      authorEmail: user?.email,
+      programmingLanguages: languages!
+    };
+    return await createProfile(profile);
+  }
 
-  const { isLoading: isPostingProfile, mutate: postProfile } = useMutation(createProfile, {
+  const { isLoading: isCreatingProfile, mutate: postProfile } = useMutation(postCreateProfile, {
     onSuccess(res) {
       toast({
         title: 'Profile created.',
@@ -96,6 +103,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
         duration: 3000,
         isClosable: true
       });
+      refetch()
     }
   });
 
@@ -110,16 +118,12 @@ const ProfileDetail = ({ childToParent }: Props) => {
     return await saveProfile(profile);
   }
 
-  const postPublishProfile = async (): Promise<AxiosResponse> => {
-    return await publishProfile(profileId!);
-  }
-
-  const { isLoading: isPublishingProfile, mutate: publish } = useMutation(
-    postPublishProfile,
+  const { isLoading: isUpdatingProfile, mutate: updateProfile } = useMutation(
+    postUpdateProfile,
     {
       onSuccess: (res) => {
         toast({
-          title: 'Profile published.',
+          title: 'Profile updated.',
           position: 'top',
           variant: 'subtle',
           description: '',
@@ -136,12 +140,16 @@ const ProfileDetail = ({ childToParent }: Props) => {
     }
   );
 
-  const { isLoading: isUpdatingProfile, mutate: updateProfile } = useMutation(
-    postUpdateProfile,
+  const postPublishProfile = async (): Promise<AxiosResponse> => {
+    return await publishProfile(profileId!);
+  }
+
+  const { isLoading: isPublishingProfile, mutate: publish } = useMutation(
+    postPublishProfile,
     {
       onSuccess: (res) => {
         toast({
-          title: 'Profile updated.',
+          title: 'Profile published.',
           position: 'top',
           variant: 'subtle',
           description: '',
@@ -180,8 +188,10 @@ const ProfileDetail = ({ childToParent }: Props) => {
     for (let i = 0; i < e.length; i += 1) {
       const obje = e[i].value
       newParams.push(obje)
-      setLanguages(newParams)
     }
+
+    setLanguages(newParams)
+    console.log(languages)
   }
 
   const editLanguage = () => {
@@ -324,7 +334,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
               </AlertDialog>
               <Button
                 leftIcon={<FaCheck />}
-                isLoading={isPostingProfile || isUpdatingProfile}
+                isLoading={isCreatingProfile || isUpdatingProfile}
                 loadingText={profileId ? `Updating` : `Creating`}
                 onClick={postData}
                 disabled={!username || !website}

@@ -23,9 +23,9 @@ model Profile {
 
 model ProgrammingLanguages {
   id        Int      @id @default(autoincrement())
-  language  String
+  language  String   @unique
   createdAt DateTime @default(now())
-  updatedAt            DateTime               @updatedAt
+  updatedAt DateTime @updatedAt
   profileId Int
   Profile   Profile  @relation(fields: [profileId], references: [id])
 }
