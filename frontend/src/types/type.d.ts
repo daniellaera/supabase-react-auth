@@ -54,6 +54,6 @@ interface ProfilePageProps {
   childToParent?: boolean;
 }
 
-export interface ReadMoreButtonProps {
+interface ReadMoreButtonProps {
   postId: number;
 }

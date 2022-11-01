@@ -1,4 +1,5 @@
-import { ChakraProvider, theme } from '@chakra-ui/react';
+import { Box, ChakraProvider, theme, useToast } from '@chakra-ui/react';
+import { AuthChangeEvent } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Invoices from './components/Invoices';
@@ -17,16 +18,34 @@ import WelcomePage from './pages/WelcomePage';
 export const App = () => {
   const session = supabaseClient.auth.getSession();
   const [signedIn, setSignedIn] = useState<boolean>(true);
+  const toast = useToast();
+  const [event, setEvent] = useState<AuthChangeEvent>()
 
   supabaseClient.auth.onAuthStateChange((event, session) => {
-    //console.log(event, session)
     if (event === 'SIGNED_OUT') {
       setSignedIn(false);
+      setEvent(event)
     }
     if (event === 'SIGNED_IN') {
       setSignedIn(true);
+      setEvent(event)
     }
   });
+
+  const showToast = (e: any) => {
+    toast({
+      position: 'bottom-left',
+      render: () => (
+        <Box color='white' p={3} bg='blue.500'>
+         { e === 'SIGNED_IN' ? `Signed In` : `SIgned Out`}
+        </Box>
+      ),
+    })
+  }
+
+  useEffect(() => {
+    if (event) showToast(event)
+  }, [event])
 
   return (
     <ChakraProvider theme={theme}>
@@ -60,26 +79,4 @@ export const App = () => {
       </BrowserRouter>
     </ChakraProvider>
   );
-  /* <ChakraProvider theme={theme}>
-    <Box textAlign="center" fontSize="xl">
-      <Grid minH="100vh" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
-        <VStack spacing={8}>
-          <Logo h="40vmin" pointerEvents="none" />
-          <Text>
-            Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-          </Text>
-          <Link
-            color="teal.500"
-            href="https://chakra-ui.com"
-            fontSize="2xl"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn Chakra
-          </Link>
-        </VStack>
-      </Grid>
-    </Box>
-  </ChakraProvider> */
 };

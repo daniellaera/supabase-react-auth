@@ -1,6 +1,5 @@
 import { Button, Stack } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-import { ReadMoreButtonProps } from '../types/type';
 
 export const ReadmoreButton = ({ postId }: ReadMoreButtonProps) => {
   return (
