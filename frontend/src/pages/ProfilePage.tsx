@@ -1,7 +1,6 @@
 import {
   Badge,
   Box,
-  Progress,
   Text,
   useToast
 } from '@chakra-ui/react';
@@ -18,8 +17,6 @@ import { useMutation, useQuery } from 'react-query';
 const ProfilePage = () => {
   const [session, setSession] = useState<Session | null>();
   const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState(null);
-  const [website, setWebsite] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   const toast = useToast();
   const [user, setUser] = useState<User | null>();

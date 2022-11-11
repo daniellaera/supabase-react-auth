@@ -1,24 +1,19 @@
 import {
   Box,
   Button,
-  Checkbox,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
-  Link,
   Stack,
   Text,
   useColorModeValue,
   useToast
 } from '@chakra-ui/react';
-import { Session, User } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiGithub } from 'react-icons/fi';
-import { useLocation, useParams } from 'react-router-dom';
 import { supabaseClient } from '../config/supabase-client';
-import eventBus from '../eventBus';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -43,6 +38,7 @@ const Login = () => {
         isClosable: true
       });
     } finally {
+      setLoadingGithub(false)
     }
   };
 
@@ -50,7 +46,6 @@ const Login = () => {
     try {
       setLoading(true);
       const { error } = await supabaseClient.auth.signInWithOtp({ email });
-
       if (error) throw error;
       toast({
         title: 'Account created.',
@@ -72,7 +67,6 @@ const Login = () => {
     } finally {
       setLoading(false);
       setEmail('')
-      console.log('akkia ghiuri')
     }
   };
 
@@ -126,47 +120,6 @@ const Login = () => {
         </Box>
       </Stack>
     </Flex>
-    /* <>
-      <FormControl id="email">
-        <FormLabel>Email address</FormLabel>
-        <Input value={email} onChange={e => setEmail(e.target.value)} type="email" />
-      </FormControl>
-      <Button
-        onClick={e => {
-          e.preventDefault();
-          handleLogin(email);
-        }}
-        isLoading={loading}
-        loadingText="Signing in ..."
-        colorScheme="teal"
-        variant="outline"
-        spinnerPlacement="start"
-        bg={'blue.400'}
-        color={'white'}
-        _hover={{
-          bg: 'blue.500'
-        }}>
-        {loading || 'Send magic link'}
-      </Button>
-      <Button
-        onClick={e => {
-          e.preventDefault();
-          signInWithGithub();
-        }}
-        isLoading={loading}
-        loadingText="Signing in ..."
-        colorScheme="teal"
-        variant="outline"
-        spinnerPlacement="start"
-        bg={'blue.400'}
-        color={'white'}
-        _hover={{
-          bg: 'blue.500'
-        }}
-        leftIcon={<FiGithub size="30" />}>
-        GitHub
-      </Button>
-    </> */
   );
 };
 

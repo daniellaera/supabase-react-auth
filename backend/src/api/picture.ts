@@ -20,8 +20,6 @@ router.get('/pictureByProfileId/:profileId', async (req, res) => {
 router.post(`/create`, async (req, res) => {
   const { profileId, avatarUrl } = req.body;
 
-  console.log(avatarUrl)
-
   const result = await prisma.picture.create({
     data: {
       avatarUrl,
@@ -33,8 +31,6 @@ router.post(`/create`, async (req, res) => {
 
 router.put(`/update`, async (req, res) => {
   const { profileId, avatarUrl } = req.body;
-
-  console.log(avatarUrl)
 
   const updateUser = await prisma.picture.update({
     where: {
