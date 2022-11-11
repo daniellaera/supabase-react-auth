@@ -6,8 +6,6 @@ const router = express.Router();
 router.post(`/create`, async (req, res) => {
   const { username, website, authorEmail, programmingLanguages } = req.body;
 
-  console.log(programmingLanguages)
-
   const result = await prisma.profile.create({
     data: {
       username,

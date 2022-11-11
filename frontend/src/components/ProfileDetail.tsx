@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, Flex, FormControl, FormLabel, HStack, Input, Progress, Stack, Tag, TagLabel, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, FormControl, FormLabel, HStack, Input, Progress, Stack, Tag, TagLabel, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
 import { User } from '@supabase/supabase-js';
 import { AxiosResponse } from 'axios';
 import { useEffect, useRef, useState } from 'react';
@@ -35,27 +35,12 @@ const ProfileDetail = ({ childToParent }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    // declare the data fetching function
-    const fetchUserData = async () => {
-      const { data: { user } } = await supabaseClient.auth.getUser()
-      setUser(user)
-
-      // we refetch here?
-      refetch()
-    }
-    // call the function
-    fetchUserData()
-      // make sure to catch any error
-      .catch(console.error);
-  }, [])
-
   const fetchProfile = async () => {
     const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(user?.email!)
     return res.data;
   };
 
-  const { isFetching, data, error, refetch } = useQuery(['profile'], fetchProfile, {
+  const { isLoading: isFetchingProfile, data: profileData, error, refetch } = useQuery(['profile'], fetchProfile, {
     enabled: false, onSuccess(res: IProfile) {
       if (res != null) {
         setUsername(res.username)
@@ -69,9 +54,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
             newParams.push(obj.language)
           })
         }
-
         setLanguages(newParams)
-
         setIsEditingLanguage(false)
       } else {
         setIsEditingLanguage(true)
@@ -81,6 +64,21 @@ const ProfileDetail = ({ childToParent }: Props) => {
       console.log(error)
     },
   });
+
+  useEffect(() => {
+    // declare the data fetching function
+    const fetchUserData = async () => {
+      const { data: { user } } = await supabaseClient.auth.getUser()
+      setUser(user)
+
+      // we refetch here?
+      if (user) refetch()
+    }
+    // call the function
+    fetchUserData()
+      // make sure to catch any error
+      .catch(console.error);
+  }, [])
 
   const postCreateProfile = async (): Promise<AxiosResponse> => {
     const profile: Omit<IProfile, 'id'> = {
@@ -191,7 +189,6 @@ const ProfileDetail = ({ childToParent }: Props) => {
     }
 
     setLanguages(newParams)
-    console.log(languages)
   }
 
   const editLanguage = () => {
@@ -207,11 +204,13 @@ const ProfileDetail = ({ childToParent }: Props) => {
   const bgColor = useColorModeValue('gray.100', 'gray.600')
   const bgColorFocus = useColorModeValue('gray.200', 'gray.800')
 
-  return !isFetching ? (
+  if (isFetchingProfile) return <Progress size={'xs'} isIndeterminate />
+
+  return (
     <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
       <Accordion allowToggle={true}>
         <AccordionItem>
-          <AccordionButton _expanded={{ bgGradient: 'linear(to-r, teal.500, green.500)', color: 'white' }} >
+          <AccordionButton _expanded={{ bgGradient: 'linear(to-r, teal.500, green.500)', color: 'white' }}>
             <Box flex='1' textAlign='left'>
               Show profile
             </Box>
@@ -289,7 +288,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
                 </HStack>)}
             </Stack>
             <Stack spacing={8} mx={'auto'} maxW={'xl'} py={12} px={6} direction={['column', 'row']}>
-              {!isPublic && <Button
+              {!isPublic && profileId && <Button
                 onClick={onOpen}
                 leftIcon={<FaAddressBook />}
                 fontFamily={'heading'}
@@ -337,7 +336,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
                 isLoading={isCreatingProfile || isUpdatingProfile}
                 loadingText={profileId ? `Updating` : `Creating`}
                 onClick={postData}
-                disabled={!username || !website}
+                disabled={!username || !website || !languages}
                 bg={'blue.400'}
                 color={'white'}
                 w="full"
@@ -351,8 +350,6 @@ const ProfileDetail = ({ childToParent }: Props) => {
         </AccordionItem>
       </Accordion>
     </Container>
-  ) : (
-    <Progress size={'xs'} isIndeterminate />
   )
 };
 

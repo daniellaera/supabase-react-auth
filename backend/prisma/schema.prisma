@@ -19,6 +19,7 @@ model Profile {
   authorEmail          String
   isPublic             Boolean                @default(false)
   programmingLanguages ProgrammingLanguages[]
+  picture              Picture?
 }
 
 model ProgrammingLanguages {
@@ -55,4 +56,13 @@ model Comment {
   createdAt DateTime @default(now())
   postId    Int
   Post      Post     @relation(fields: [postId], references: [id])
+}
+
+model Picture {
+  id        Int      @id @default(autoincrement())
+  avatarUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profileId Int @unique
+  profile   Profile  @relation(fields: [profileId], references: [id])
 }

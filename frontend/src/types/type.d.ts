@@ -16,6 +16,14 @@ interface IProgrammingLanguage {
   color?: string;
 }
 
+interface IPicture {
+  id: number;
+  profileId: number;
+  avatarUrl: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 interface IProfile {
   id: number;
   authorEmail: string | undefined;
@@ -25,6 +33,7 @@ interface IProfile {
   createdAt?: string;
   updatedAt?: string;
   isPublic?: boolean;
+  avatarUrl?: string;
   programmingLanguages: IProgrammingLanguage[];
 }
 
@@ -38,6 +47,7 @@ type ApiDataType = {
   posts?: IPost[];
   todo?: IPost;
   profile?: IProfile
+  picture?: IPicture
 };
 
 type GetPostsResponse = {

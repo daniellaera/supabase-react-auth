@@ -1,8 +1,9 @@
-import { Avatar, Box, Button, Flex, keyframes } from '@chakra-ui/react';
+import { Avatar, Box, Button, Flex, keyframes, Tooltip } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '../config/supabase-client';
+import { UPLOAD_PICTURE_DISABLED_TEXT } from '../utils/constants';
 
-const PersonalAvatar = ({ url, onUpload }: any) => {
+const PersonalAvatar = ({ url, onUpload, disabled }: any) => {
   const [avatarUrl, setAvatarUrl] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -28,7 +29,7 @@ const PersonalAvatar = ({ url, onUpload }: any) => {
 
   async function downloadImage(path: any) {
     try {
-      const { data, error }: any = await supabaseClient.storage.from('avatars').download(path);
+      const { data, error }: any = await supabaseClient.storage.from('images').download(path);
       if (error) {
         throw error;
       }
@@ -52,7 +53,7 @@ const PersonalAvatar = ({ url, onUpload }: any) => {
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      let { error: uploadError } = await supabaseClient.storage.from('avatars').upload(filePath, file);
+      let { error: uploadError } = await supabaseClient.storage.from('images').upload(filePath, file);
 
       if (uploadError) {
         throw uploadError;
@@ -105,31 +106,33 @@ const PersonalAvatar = ({ url, onUpload }: any) => {
           'center'
         }
         overflow="hidden">
-        <Button
-          size="sm"
-          flex={1}
-          mb={4}
-          fontSize={'sm'}
-          rounded={'full'}
-          _focus={{
-            bg: 'gray.200'
-          }}
-        >
-          <label className="button primary block" htmlFor="single">
-            {uploading ? 'Uploading ...' : 'Upload'}
-          </label>
-        </Button>
-
+        <Tooltip isDisabled={!disabled} placement="left" hasArrow label={UPLOAD_PICTURE_DISABLED_TEXT} bg={'green.600'}>
+          <Button
+            disabled={disabled}
+            size="sm"
+            flex={1}
+            mb={4}
+            fontSize={'sm'}
+            rounded={'full'}
+            _focus={{
+              bg: 'gray.200'
+            }}
+          >
+            <label className="button primary block" htmlFor="single">
+              {uploading ? 'Uploading ...' : 'Upload'}
+            </label>
+          </Button></Tooltip>
         <input
           style={{
             visibility: 'hidden',
-            position: 'absolute'
+            position: 'absolute',
+            cursor: 'pointer'
           }}
           type="file"
           id="single"
           accept="image/*"
           onChange={uploadAvatar}
-          disabled={uploading}
+          disabled={uploading || disabled}
         />
       </Box>
     </>

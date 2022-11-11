@@ -33,14 +33,6 @@ const Login = () => {
         provider: 'github',
       });
       if (error) throw error
-      /*toast({
-        title: 'Signed in with GitHub',
-        position: 'top',
-        description: 'You have successfully authenticated with GitHub',
-        status: 'success',
-        duration: 5000,
-        isClosable: true
-      });*/
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -80,6 +72,7 @@ const Login = () => {
     } finally {
       setLoading(false);
       setEmail('')
+      console.log('akkia ghiuri')
     }
   };
 

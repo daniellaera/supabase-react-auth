@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 const baseUrl: string = 'http://localhost:5000/api/v1/posts';
 export const profileUrl: string = 'http://localhost:5000/api/v1/profile';
+const pictureUrl: string = 'http://localhost:5000/api/v1/picture';
 
 export async function getPosts() {
   const response = await fetch(baseUrl);
@@ -63,3 +64,18 @@ export async function publishProfile(profileId: number) {
   const response = await axios.put(`${profileUrl}/publishProfile/${profileId}`);
   return response
 }
+
+export async function createPicture(picture: Omit<IPicture, 'id'>) {
+  const response = await axios.post(`${pictureUrl}/create`, picture);
+  return response
+}
+
+export async function updatePicture(picture: Omit<IPicture, 'id'>) {
+  const response = await axios.put(`${pictureUrl}/update`, picture);
+  return response
+}
+
+export async function getPictureByProfileId(profileId: number) {
+  const response = await axios.get(`${pictureUrl}/pictureByProfileId/${profileId}`);
+  return response;
+};
