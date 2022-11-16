@@ -6,6 +6,7 @@ interface IPost {
   status?: boolean;
   createdAt?: string;
   updatedAt?: string;
+  accToken?: string
 }
 
 interface IProgrammingLanguage {

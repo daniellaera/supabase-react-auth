@@ -34,7 +34,7 @@ export const addTodo = async (formData: any): Promise<AxiosResponse<ApiDataType>
       content: formData.content,
       authorEmail: formData.authorEmail
     };
-    const saveTodo: AxiosResponse = await axios.post(baseUrl + '/create', todo);
+    const saveTodo: AxiosResponse = await axios.post(baseUrl + '/create', todo, {headers: {'Authorization': `token ${formData.accToken}`}});
     return saveTodo;
   } catch (error: any) {
     throw new Error(error);

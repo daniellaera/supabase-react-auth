@@ -1,17 +1,32 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabaseClient } from '../config/supabase-client';
 import { useMutation } from 'react-query';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { addTodo } from '../api';
-import { User } from '@supabase/supabase-js';
-import { useToast } from '@chakra-ui/react';
+import { Session, User } from '@supabase/supabase-js';
+import { Button, Container, Flex, FormControl, Heading, Input, Stack, useColorModeValue, useToast } from '@chakra-ui/react';
+import { CheckIcon } from '@chakra-ui/icons';
 
 function NewPostPage() {
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
+  const [session, setSession] = useState<Session | null>();
   const [user, setUser] = useState<User | null>();
+  const [state, setState] = useState<'initial' | 'submitting' | 'success'>('initial');
+  const [error, setError] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const setData = async () => {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      setSession(session);
+    };
+
+    setData();
+  }, []);
 
   useEffect(() => {
     // declare the data fetching function
@@ -26,10 +41,7 @@ function NewPostPage() {
       .catch(console.error);
   }, [])
 
-  // const userEmail: string | undefined = supabaseClient.auth.getUser()?.email
-
-
-  const createTodo = (): Promise<AxiosResponse> => addTodo({ title: postTitle, content: postContent, authorEmail: user?.email })
+  const createTodo = (): Promise<AxiosResponse> => addTodo({ title: postTitle, content: postContent, authorEmail: user?.email, accToken: session?.access_token })
 
   const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(createTodo, {
     onSuccess(res) {
@@ -45,44 +57,6 @@ function NewPostPage() {
     }
   })
 
-  // const navigate = useNavigate()
-
-  // const [postResult, setPostResult] = useState<any>(null);
-
-  /* const fortmatResponse = (res: any) => {
-    return JSON.stringify(res, null, 2);
-  }; */
-
-  /* const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(
-    async () => {
-      return await axios.post(`http://localhost:5000/api/v1/posts/create`, {
-        title: postTitle,
-        content: postContent,
-        authorEmail: user?.email
-      });
-    },
-    {
-      onSuccess: (res) => {
-        const result = {
-          status: res.status + "-" + res.statusText,
-          headers: res.headers,
-          data: res.data,
-        };
-
-        navigate('/posts')
-
-        setPostResult(fortmatResponse(result));
-      },
-      onError: (err: any) => {
-        setPostResult(fortmatResponse(err.response?.data || err));
-      },
-    }
-  ); */
-
-  /* useEffect(() => {
-    if (isPostingTutorial) setPostResult("posting...");
-  }, [isPostingTutorial]); */
-
   function postData() {
     try {
       postTutorial()
@@ -91,51 +65,108 @@ function NewPostPage() {
     }
   }
 
-  /* const clearPostOutput = () => {
-    setPostResult(null);
-  }; */
-
   return (
-    <div id="app" className="container">
-      <div className="card">
-        <div className="card-header">React Query Axios POST </div>
-        <div className="card-body">
-          <div className="form-group">
-            <input
-              type="text"
-              value={postTitle}
-              onChange={(e) => setPostTitle(e.target.value)}
-              className="form-control"
-              placeholder="Title"
-            />
-          </div>
-          <div className="form-group">
-            <input
-              type="text"
-              value={postContent}
-              onChange={(e) => setPostContent(e.target.value)}
-              className="form-control"
-              placeholder="Description"
-            />
-          </div>
-          <button className="btn btn-sm btn-primary" onClick={postData}>
-            Post Data
-          </button>
-          {/* <button
-          className="btn btn-sm btn-warning ml-2"
-          onClick={clearPostOutput}
-        >
-          Clear
-        </button> */}
+    <Flex minH={'20vh'} align={'center'} justify={'center'} mt={8}>
+      <Container
+        maxW={'lg'}
+        bg={useColorModeValue('white', 'whiteAlpha.100')}
+        boxShadow={'xl'}
+        rounded={'lg'}
+        p={6}
+      >
+        <Heading as={'h2'} fontSize={{ base: 'xl', sm: '2xl' }} textAlign={'center'} mb={5}>
+          Wha do you have in mind?
+        </Heading>
+        <Stack
 
-          {/* {postResult && (
-          <div className="alert alert-secondary mt-2" role="alert">
-            <pre>{postResult}</pre>
-          </div>
-        )} */}
-        </div>
-      </div>
-    </div>
+          as={'form'}
+          spacing={'30'}
+          onSubmit={async (e: FormEvent) => {
+            e.preventDefault();
+
+            try {
+              if (postTitle.length < 1 || postContent.length < 1) {
+                setError(true);
+                toast({
+                  position: 'top',
+                  title: 'An error occured',
+                  description: `${error}`,
+                  status: 'error',
+                  duration: 5000,
+                  isClosable: true
+                });
+                return;
+              }
+            } catch (error) {
+              toast({
+                position: 'top',
+                title: 'An error occured',
+                description: `${error}`,
+                duration: 5000,
+                status: 'error',
+                isClosable: true
+              });
+            }
+
+            setError(false);
+            setState('submitting');
+
+            setTimeout(() => {
+              setState('success');
+            }, 1000);
+            setTimeout(() => {
+              navigate('/posts')
+            }, 2000);
+          }}
+        >
+          <FormControl>
+            <Input
+              variant={'solid'}
+              borderWidth={1}
+              color={'white.800'}
+              _placeholder={{ color: 'gray.400' }}
+              borderColor={useColorModeValue('gray.300', 'gray.700')}
+              id={'text'}
+              type={'text'}
+              required
+              placeholder={'your title here'}
+              aria-label={'your title here'}
+              value={postTitle}
+              disabled={state !== 'initial' && state !== 'success'}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPostTitle(e.target.value)}
+            ></Input>
+          </FormControl>
+          <FormControl>
+            <Input
+              variant={'solid'}
+              borderWidth={1}
+              color={'white.800'}
+              _placeholder={{ color: 'gray.400' }}
+              borderColor={useColorModeValue('gray.300', 'gray.700')}
+              id={'text'}
+              type={'text'}
+              required
+              placeholder={'your content here'}
+              aria-label={'your content here'}
+              value={postContent}
+              disabled={state !== 'initial' && state !== 'success'}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPostContent(e.target.value)}
+            ></Input>
+          </FormControl>
+          <FormControl w={{ base: '100%', md: '40%' }}>
+            <Button
+              colorScheme={state === 'success' ? 'green' : 'blue'}
+              isLoading={state === 'submitting'}
+              w={'100%'}
+              type={state === 'success' ? 'button' : 'submit'}
+              onClick={postData}
+            >
+              {state === 'success' ? <CheckIcon /> : 'Submit'}
+            </Button>
+          </FormControl>
+        </Stack>
+      </Container>
+    </Flex>
   );
 }
 

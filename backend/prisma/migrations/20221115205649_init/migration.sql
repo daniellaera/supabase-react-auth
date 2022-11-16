@@ -66,7 +66,7 @@ CREATE TABLE "Picture" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ProgrammingLanguages_language_key" ON "ProgrammingLanguages"("language");
+CREATE UNIQUE INDEX "ProgrammingLanguages_language_id_key" ON "ProgrammingLanguages"("language", "id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Picture_profileId_key" ON "Picture"("profileId");

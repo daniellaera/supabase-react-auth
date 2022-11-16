@@ -1,5 +1,5 @@
 import { Spinner } from '@chakra-ui/react';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -16,7 +16,6 @@ const PostDetailPage = () => {
     
   const { data, isLoading, error, isError } = useQuery(['post'], fetchPost, {onSuccess(res) {
       setPost(res.data)
-      console.log('post here', post)
   },})
 
   if (isLoading) {

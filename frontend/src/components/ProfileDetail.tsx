@@ -35,6 +35,21 @@ const ProfileDetail = ({ childToParent }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = useRef<HTMLButtonElement>(null);
 
+  useEffect(() => {
+    // declare the data fetching function
+    const fetchUserData = async () => {
+      const { data: { user } } = await supabaseClient.auth.getUser()
+      setUser(user)
+
+      // we refetch here?
+      if (user) refetch()
+    }
+    // call the function
+    fetchUserData()
+      // make sure to catch any error
+      .catch(console.error);
+  }, [])
+
   const fetchProfile = async () => {
     const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(user?.email!)
     return res.data;
@@ -64,21 +79,6 @@ const ProfileDetail = ({ childToParent }: Props) => {
       console.log(error)
     },
   });
-
-  useEffect(() => {
-    // declare the data fetching function
-    const fetchUserData = async () => {
-      const { data: { user } } = await supabaseClient.auth.getUser()
-      setUser(user)
-
-      // we refetch here?
-      if (user) refetch()
-    }
-    // call the function
-    fetchUserData()
-      // make sure to catch any error
-      .catch(console.error);
-  }, [])
 
   const postCreateProfile = async (): Promise<AxiosResponse> => {
     const profile: Omit<IProfile, 'id'> = {

@@ -140,6 +140,7 @@ const ProfilePage = () => {
           duration: 3000,
           isClosable: true
         });
+        eventBus.dispatch('profileUpdated', true);
       },
       onError: (err) => {
         console.log(err)

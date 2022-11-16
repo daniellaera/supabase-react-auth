@@ -14,7 +14,7 @@ router.post(`/create`, async (req, res) => {
       programmingLanguages: {
         connectOrCreate: programmingLanguages.map((lang: string, id: number) => ({
           create: { language: lang },
-          where: { language: lang },
+          where: { id: id },
         })),
       },
     },
@@ -57,10 +57,10 @@ router.get('/findProfileByEmail/:authorEmail', async (req, res) => {
       include: {
         programmingLanguages: {
           select: {
-            language: true
-          }
-        }
-      }
+            language: true,
+          },
+        },
+      },
     });
 
     res.json(post);
