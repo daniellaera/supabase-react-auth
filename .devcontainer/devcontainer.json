@@ -45,6 +45,10 @@
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "node",
 	"features": {
-		"powershell": "latest"
+		"powershell": "latest",
+		"ghcr.io/dhoeric/features/flyctl:1": {
+			"version": "latest"
+		}
 	}
+	// for more features https://containers.dev/features
 }
