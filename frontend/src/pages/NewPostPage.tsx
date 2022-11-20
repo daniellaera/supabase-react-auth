@@ -23,6 +23,7 @@ function NewPostPage() {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw error;
       setSession(session);
+      //console.log(session?.access_token)
     };
 
     setData();

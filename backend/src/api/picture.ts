@@ -1,5 +1,5 @@
 import express from 'express';
-import prisma from '../../lib/prisma';
+import prisma from '../lib/prisma';
 
 const router = express.Router();
 
@@ -17,19 +17,19 @@ router.get('/pictureByProfileId/:profileId', async (req, res) => {
   }
 });
 
-router.post(`/create`, async (req, res) => {
+router.post('/create', async (req, res) => {
   const { profileId, avatarUrl } = req.body;
 
   const result = await prisma.picture.create({
     data: {
       avatarUrl,
-      profileId: profileId
-    }
-  })
+      profileId: profileId,
+    },
+  });
   res.json(result);
-})
+});
 
-router.put(`/update`, async (req, res) => {
+router.put('/update', async (req, res) => {
   const { profileId, avatarUrl } = req.body;
 
   const updateUser = await prisma.picture.update({

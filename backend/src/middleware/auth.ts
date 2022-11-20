@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
-
-const SECRET_KEY: Secret = 'my_super_secret';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 type MyToken = {
   userId: string;

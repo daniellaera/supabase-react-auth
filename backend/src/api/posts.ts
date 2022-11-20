@@ -1,5 +1,5 @@
 import express from 'express';
-import prisma from '../../lib/prisma';
+import prisma from '../lib/prisma';
 import { auth } from '../middleware/auth';
 
 const router = express.Router();
@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
   res.status(200).json(posts);
 });
 
-router.post(`/create`, auth, async (req, res) => {
+router.post('/create', auth, async (req, res) => {
   const { title, content, authorEmail } = req.body;
   try {
     const result = await prisma.post.create({

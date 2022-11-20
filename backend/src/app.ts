@@ -2,17 +2,11 @@ import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-
-
-import { PrismaClient } from '@prisma/client';
-
 import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
 import * as middlewares from './middlewares';
 
 require('dotenv').config();
-
-const prisma = new PrismaClient()
 
 const app = express();
 
@@ -23,7 +17,7 @@ app.use(express.json());
 
 app.get<{}, MessageResponse>('/', (req, res) => {
   res.json({
-    message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄',
+    message: '🚀🦄🌈✨👋🌎✨🌈🦄🚀',
   });
 });
 
