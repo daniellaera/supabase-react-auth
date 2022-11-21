@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 
-const baseUrl: string = 'http://localhost:5000/api/v1/posts';
-export const profileUrl: string = 'http://localhost:5000/api/v1/profile';
-const pictureUrl: string = 'http://localhost:5000/api/v1/picture';
+const baseUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/posts`;
+const profileUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/profile`;
+const pictureUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/picture`;
 
 export async function getPosts() {
   const response = await fetch(baseUrl);
