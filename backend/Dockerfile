@@ -1,16 +1,59 @@
-#FROM node:16-bullseye-slim
-FROM node:16-alpine3.11
+# base node image
+FROM node:16-bullseye-slim as base
 
-WORKDIR /usr/src/app
+# Install openssl for Prisma
+RUN apt-get update && apt-get install -y openssl
 
-COPY package.json ./
-RUN npm install
+# Install all node_modules, including dev dependencies
+FROM base as deps
 
-COPY prisma/schema.prisma ./prisma/
+RUN mkdir /app
+WORKDIR /app
+
+ADD package.json package-lock.json ./
+RUN npm install --production=false
+
+# Setup production node_modules
+FROM base as production-deps
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY --from=deps /app/node_modules /app/node_modules
+ADD package.json package-lock.json ./
+RUN npm prune --production
+
+# Build the app
+FROM base as build
+
+ENV NODE_ENV=production
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY --from=deps /app/node_modules /app/node_modules
+
+# If we're using Prisma, uncomment to cache the prisma schema
+ADD prisma .
 RUN npx prisma generate
 
-COPY . .
-
+ADD . .
 RUN npm run build
-EXPOSE 5000
-CMD [ "npm", "run", "start" ]
+
+# Finally, build the production image with minimal footprint
+FROM base
+
+ENV NODE_ENV production
+
+RUN mkdir /app
+WORKDIR /app
+
+COPY --from=production-deps /app/node_modules /app/node_modules
+
+# Uncomment if using Prisma
+COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
+
+COPY --from=build /app/dist ./dist
+ADD . .
+
+CMD ["node", "dist/src/index.js"]

@@ -1,6 +1,6 @@
-# fly.toml file generated for supa-backend on 2022-11-19T17:22:42Z
+# fly.toml file generated for supa-react-backend on 2022-11-21T19:33:01Z
 
-app = "supa-backend"
+app = "supa-react-backend"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
