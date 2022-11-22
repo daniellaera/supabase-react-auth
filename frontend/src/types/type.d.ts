@@ -57,7 +57,6 @@ type GetPostsResponse = {
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  session: any;
   signedIn: boolean;
 }
 

@@ -1,16 +1,20 @@
+import { AddIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import {
   Avatar,
   Box,
   Button,
   Flex,
   HStack,
+  IconButton,
   Menu,
   MenuButton,
   MenuDivider,
   MenuItem,
   MenuList,
+  Stack,
   Text,
   useColorModeValue,
+  useDisclosure,
   VStack
 } from '@chakra-ui/react';
 import { Session } from '@supabase/supabase-js';
@@ -33,6 +37,7 @@ const MainNavigation = () => {
   const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [username, setUsername] = useState<string | undefined>();
   const [profile, setProfile] = useState<IProfile>()
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     // we listen here if someone cleans the storage in the browser
@@ -133,12 +138,23 @@ const MainNavigation = () => {
   }, []);
 
   return (
-    <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
-      <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-        <HStack spacing={8} alignItems={'center'}>
-          <Box>🚀</Box>
-          <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
-            <NavLink to="/" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
+    <>
+      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
+        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
+          <IconButton
+            size={'md'}
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            aria-label={'Open Menu'}
+            display={{ md: 'none' }}
+            onClick={isOpen ? onClose : onOpen}
+          />
+          <HStack spacing={8} alignItems={'center'}>
+            <Box>DevConnector 🚀</Box>
+            <HStack
+              as={'nav'}
+              spacing={4}
+              display={{ base: 'none', md: 'flex' }}>
+              <NavLink to="/" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
               <Button leftIcon={<FaHome />} colorScheme='teal' variant='ghost' size={'sm'} mr={4}>
                 Home
               </Button>
@@ -154,9 +170,9 @@ const MainNavigation = () => {
             <NavLink to="/profile" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
               Profile
             </NavLink>
+            </HStack>
           </HStack>
-        </HStack>
-        <Flex alignItems={'center'}>
+          <Flex alignItems={'center'}>
           {session ? (
             <>
               <Button
@@ -199,8 +215,32 @@ const MainNavigation = () => {
           )}
           <ColorModeSwitcher justifySelf="flex-end" marginLeft={4} />
         </Flex>
-      </Flex>
-    </Box>
+        </Flex>
+
+        {isOpen ? (
+          <Box pb={4} display={{ md: 'none' }}>
+            <Stack as={'nav'} spacing={4}>
+            <NavLink to="/" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
+              <Button leftIcon={<FaHome />} colorScheme='teal' variant='ghost' size={'sm'} mr={4}>
+                Home
+              </Button>
+            </NavLink>
+            <NavLink to="/invoices" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
+              Invoices
+            </NavLink>
+
+            <NavLink to="/posts" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
+              Posts
+            </NavLink>
+
+            <NavLink to="/profile" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
+              Profile
+            </NavLink>
+            </Stack>
+          </Box>
+        ) : null}
+      </Box>
+    </>
   );
 };
 

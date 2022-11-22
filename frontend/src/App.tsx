@@ -16,12 +16,11 @@ import ProfilePage from './pages/ProfilePage';
 import WelcomePage from './pages/WelcomePage';
 
 export const App = () => {
-  const session = supabaseClient.auth.getSession();
   const [signedIn, setSignedIn] = useState<boolean>(true);
   const toast = useToast();
   const [event, setEvent] = useState<AuthChangeEvent>()
 
-  supabaseClient.auth.onAuthStateChange((event, session) => {
+  supabaseClient.auth.onAuthStateChange((event) => {
     if (event === 'SIGNED_OUT') {
       setSignedIn(false);
       setEvent(event)
@@ -45,6 +44,17 @@ export const App = () => {
 
   useEffect(() => {
     if (event) showToast(event)
+
+    const setData = async () => {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      if (session) {
+        setSignedIn(true)
+      } else {
+        setSignedIn(false)
+      }
+    };
+    setData()
   }, [event])
 
   return (
@@ -60,14 +70,14 @@ export const App = () => {
             <Route
               path="/post/new"
               element={
-                <ProtectedRoute session={session} signedIn={signedIn}>
+                <ProtectedRoute signedIn={signedIn}>
                   <NewPostPage />
                 </ProtectedRoute>
               }
             />
             <Route path="/invoices" element={<Invoices />} />
             <Route path="/profile" element={
-                <ProtectedRoute session={session} signedIn={signedIn}>
+                <ProtectedRoute signedIn={signedIn}>
                   <ProfileLayout />
                 </ProtectedRoute>
               }>

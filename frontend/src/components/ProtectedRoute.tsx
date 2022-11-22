@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
 
-const ProtectedRoute = ({ children, session, signedIn }: ProtectedRouteProps) => {
+const ProtectedRoute = ({ children, signedIn }: ProtectedRouteProps) => {
 
-    if (!signedIn || !session) {
+    if (!signedIn) {
       // user is not authenticated
       return <Navigate to="/" />;
     }
