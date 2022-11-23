@@ -41,6 +41,8 @@ const ProfileDetail = ({ childToParent }: Props) => {
       const { data: { user } } = await supabaseClient.auth.getUser()
       setUser(user)
 
+      console.log('user email here', user?.email)
+
       // we refetch here?
       if (user) refetch()
     }

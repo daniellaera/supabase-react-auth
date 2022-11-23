@@ -1,6 +1,7 @@
 import {
   Badge,
   Box,
+  Progress,
   Text,
   useToast
 } from '@chakra-ui/react';
@@ -40,6 +41,7 @@ const ProfilePage = () => {
       const setUserData = async () => {
         const { data: { user } } = await supabaseClient.auth.getUser();
         setUser(user)
+        console.log('user email another here', user?.email)
       }
       setUserData()
     }
@@ -166,6 +168,8 @@ const ProfilePage = () => {
     },
     []
   );
+
+  if (isFetchingProfile) return <Progress size={'xs'} isIndeterminate />
 
   return (
     <div>

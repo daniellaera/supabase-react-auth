@@ -23,7 +23,7 @@ export const getPost = async (id: number): Promise<AxiosResponse> => {
 };
 
 export const getProfileByAuthorEmail = async (authorEmail: string): Promise<AxiosResponse>  => {
-  const response: AxiosResponse<ApiDataType> = await axios.get(profileUrl + '/findProfileByEmail/' + authorEmail);
+  const response: AxiosResponse<ApiDataType> = await axios.get(`${profileUrl}/findProfileByEmail/${authorEmail}`);
   return response;
 };
 
