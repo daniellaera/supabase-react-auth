@@ -1,4 +1,4 @@
-import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, FormControl, FormLabel, HStack, Input, Progress, Stack, Tag, TagLabel, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
+import { Accordion, AccordionButton, AccordionIcon, AccordionItem, AccordionPanel, AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Box, Button, Container, FormControl, FormLabel, HStack, Input, Progress, Stack, Tag, TagLabel, Text, useColorModeValue, useDisclosure, useToast } from '@chakra-ui/react';
 import { User } from '@supabase/supabase-js';
 import { AxiosResponse } from 'axios';
 import { useEffect, useRef, useState } from 'react';
@@ -25,6 +25,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
   const [username, setUsername] = useState<string>('');
   const [languages, setLanguages] = useState<IProgrammingLanguage[] | undefined>();
   const [website, setWebsite] = useState<string>('');
+  const [company, setCompany] = useState<string>('');
   const [isPublic, setIsPublic] = useState<boolean>();
   const [isEditingLanguage, setIsEditingLanguage] = useState<boolean>();
   const [profileId, setProfileId] = useState<number>()
@@ -41,10 +42,8 @@ const ProfileDetail = ({ childToParent }: Props) => {
       const { data: { user } } = await supabaseClient.auth.getUser()
       setUser(user)
 
-      console.log('user email here', user?.email)
-
       // we refetch here?
-      if (user) refetch()
+      //if (user) refetch()
     }
     // call the function
     fetchUserData()
@@ -57,11 +56,12 @@ const ProfileDetail = ({ childToParent }: Props) => {
     return res.data;
   };
 
-  const { isLoading: isFetchingProfile, data: profileData, error, refetch } = useQuery(['profile'], fetchProfile, {
+  const { isLoading: isFetchingProfile, data: profileData, refetch } = useQuery(['profile'], fetchProfile, {
     enabled: false, onSuccess(res: IProfile) {
       if (res != null) {
         setUsername(res.username)
         setWebsite(res.website)
+        setCompany(res.company)
         setProfileId(res.id)
         childToParent(res.isPublic ? true : false);
         setIsPublic(res.isPublic)
@@ -77,7 +77,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
         setIsEditingLanguage(true)
       }
     },
-    onError: () => {
+    onError: (error) => {
       console.log(error)
     },
   });
@@ -86,6 +86,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
     const profile: Omit<IProfile, 'id'> = {
       website: website,
       username: username,
+      company: company,
       authorEmail: user?.email,
       programmingLanguages: languages!
     };
@@ -111,6 +112,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
     const profile: IProfile = {
       website: website,
       username: username,
+      company: company,
       authorEmail: user?.email,
       id: profileId!,
       programmingLanguages: languages!
@@ -206,13 +208,11 @@ const ProfileDetail = ({ childToParent }: Props) => {
   const bgColor = useColorModeValue('gray.100', 'gray.600')
   const bgColorFocus = useColorModeValue('gray.200', 'gray.800')
 
-  if (isFetchingProfile) return <Progress size={'xs'} isIndeterminate />
-
   return (
     <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
       <Accordion allowToggle={true}>
         <AccordionItem>
-          <AccordionButton _expanded={{ bgGradient: 'linear(to-r, teal.500, green.500)', color: 'white' }}>
+          <AccordionButton _expanded={{ bgGradient: 'linear(to-r, teal.500, green.500)', color: 'white' }} onClick={() => refetch()}>
             <Box flex='1' textAlign='left'>
               Show profile
             </Box>
@@ -258,6 +258,25 @@ const ProfileDetail = ({ childToParent }: Props) => {
               </FormControl>
             </Stack>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={6} px={6}>
+              <FormControl>
+                <FormLabel>Company</FormLabel>
+                <Input
+                  type={'text'}
+                  value={company || ''}
+                  onChange={(e: any) => setCompany(e.target.value)}
+                  placeholder={company || 'company'}
+                  color={color}
+                  bg={bgColor}
+                  rounded={'full'}
+                  border={0}
+                  _focus={{
+                    bg: bgColorFocus,
+                    outline: 'none'
+                  }}
+                />
+              </FormControl>
+            </Stack>
+            <Stack spacing={1} mx={'auto'} maxW={'lg'} py={6} px={6}>
               {isEditingLanguage ? (<FormControl pb={10}>
                 <FormLabel>Select programming languages that you like most</FormLabel>
                 <AsyncSelect
@@ -278,6 +297,8 @@ const ProfileDetail = ({ childToParent }: Props) => {
                   }}
                 />
               </FormControl>) : (
+                <>
+                <FormLabel>Programming languages</FormLabel>
                 <HStack spacing={4}>
                   {Object.entries(newParams)
                     .map(
@@ -287,7 +308,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
                   <Button onClick={() => editLanguage()} leftIcon={<EditIcon />} colorScheme='pink' variant='ghost'>
                     Edit
                   </Button>
-                </HStack>)}
+                </HStack></>)}
             </Stack>
             <Stack spacing={8} mx={'auto'} maxW={'xl'} py={12} px={6} direction={['column', 'row']}>
               {!isPublic && profileId && <Button

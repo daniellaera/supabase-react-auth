@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Invoices from './components/Invoices';
 import Login from './components/Login';
+import NotFound from './components/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import RootLayout from './components/RootLayout';
+import Test from './components/Test';
 import { supabaseClient } from './config/supabase-client';
 import NewPostPage from './pages/NewPostPage';
 import PostDetailPage from './pages/PostDetailPage';
@@ -63,6 +65,8 @@ export const App = () => {
         <RootLayout>
           <Routes>
             <Route path="/" element={<WelcomePage />} />
+            <Route path="/test" element={<Test />} />
+            <Route path='*' element={<NotFound />} />
             <Route path="/posts" element={<PostLayout />}>
               <Route index element={<PostPage />} />
             </Route>

@@ -49,9 +49,25 @@ const MainNavigation = () => {
       })
     }
     //if (session) getAvatarUrl();
-    if (session) refetch()
+    //if (session) refetch()
     handleLocalStorage()
   }, [session]);
+
+  const fetchProfile = async () => {
+    const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(session?.user.email!)
+    return res.data;
+  };
+
+  const { data: profileData, error, isLoading: isFetchingProfile, refetch } = useQuery(['profile'], fetchProfile, {
+    enabled: false, onSuccess(res: IProfile) {
+      if (res != null) {
+        setUsername(res.username)
+      }
+    },
+    onError: (err) => {
+      console.log(err)
+    }
+  });
 
   const fetchProfilePicture = async () => {
     const res: AxiosResponse<ApiDataType> = await getPictureByProfileId(profile?.id!)
@@ -68,6 +84,9 @@ const MainNavigation = () => {
   })
 
   useEffect(() => {
+    if (session) {
+      refetch()
+    }
     if (profileData) {
       setProfile(profileData)
     }
@@ -77,11 +96,10 @@ const MainNavigation = () => {
     if (pictureData) {
       setAvatarUrl(pictureData.avatarUrl)
     }
-  }, [avatar_url, profile, pictureData]);
-
-  useEffect(() => {
     if (avatar_url) downloadImage(avatar_url);
-  }, [avatar_url]);
+  }, [avatar_url, profile, pictureData, refetchPicture, profileData, session, refetch]);
+
+
 
   async function downloadImage(path: any) {
     try {
@@ -95,21 +113,6 @@ const MainNavigation = () => {
       console.log('Error downloading image: ', error.message);
     }
   }
-  const fetchProfile = async () => {
-    const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(session?.user.email!)
-    return res.data;
-  };
-
-  const { data: profileData, error, isLoading: isFetchingProfile, refetch } = useQuery(['profile'], fetchProfile, {
-    enabled: false, onSuccess(res: IProfile) {
-      if (res != null) {
-        setUsername(res.username)
-      }
-    },
-    onError: (err) => {
-      console.log(err)
-    }
-  });
 
   // we listen for potential ProfilePage.tsx updates especially avatar
   // and we reload the gravatar url
@@ -161,6 +164,10 @@ const MainNavigation = () => {
             </NavLink>
             <NavLink to="/invoices" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
               Invoices
+            </NavLink>
+
+            <NavLink to="/test" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
+              Test
             </NavLink>
 
             <NavLink to="/posts" className={({ isActive }) => (isActive ? classes.active : undefined)} end>

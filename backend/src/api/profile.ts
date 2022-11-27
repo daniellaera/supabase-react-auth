@@ -4,13 +4,14 @@ import prisma from '../lib/prisma';
 const router = express.Router();
 
 router.post('/create', async (req, res) => {
-  const { username, website, authorEmail, programmingLanguages } = req.body;
+  const { username, website, authorEmail, programmingLanguages, company } = req.body;
 
   const result = await prisma.profile.create({
     data: {
       username,
       website,
       authorEmail,
+      company,
       programmingLanguages: {
         connectOrCreate: programmingLanguages.map((lang: string, id: number) => ({
           create: { language: lang },
@@ -24,7 +25,7 @@ router.post('/create', async (req, res) => {
 
 router.put('/updateById/:profileId', async (req, res) => {
   const { profileId } = req.params;
-  const { username, website, programmingLanguages, isPublic } = req.body;
+  const { username, website, company, programmingLanguages, isPublic } = req.body;
 
   // we delete first all record with profileId
   await prisma.$transaction([prisma.programmingLanguages.deleteMany({ where: { profileId: Number(profileId) } })]);
@@ -35,6 +36,7 @@ router.put('/updateById/:profileId', async (req, res) => {
     data: {
       username: username,
       website: website,
+      company: company,
       isPublic: isPublic,
       programmingLanguages: {
         connectOrCreate: programmingLanguages.map((lang: string) => ({
@@ -52,7 +54,7 @@ router.get('/findProfileByEmail/:authorEmail', async (req, res) => {
   const { authorEmail } = req.params;
 
   try {
-    const post = await prisma.profile.findFirst({
+    const profile = await prisma.profile.findFirst({
       where: { authorEmail },
       include: {
         programmingLanguages: {
@@ -62,8 +64,7 @@ router.get('/findProfileByEmail/:authorEmail', async (req, res) => {
         },
       },
     });
-
-    res.json(post);
+    res.json(profile);
   } catch (error) {
     res.json({ error: `Profile with authorEmail ${authorEmail} does not exist in the database` });
   }

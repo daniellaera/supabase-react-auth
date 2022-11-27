@@ -16,6 +16,7 @@ model Profile {
   updatedAt            DateTime               @updatedAt
   username             String
   website              String
+  company              String
   authorEmail          String
   isPublic             Boolean                @default(false)
   programmingLanguages ProgrammingLanguages[]
@@ -65,6 +66,6 @@ model Picture {
   avatarUrl String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  profileId Int @unique
+  profileId Int      @unique
   profile   Profile  @relation(fields: [profileId], references: [id])
 }

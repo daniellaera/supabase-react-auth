@@ -30,6 +30,7 @@ interface IProfile {
   authorEmail: string | undefined;
   website: string;
   username: string;
+  company: string;
   status?: boolean;
   createdAt?: string;
   updatedAt?: string;

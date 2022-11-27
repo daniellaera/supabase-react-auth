@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import api from './api';
 import MessageResponse from './interfaces/MessageResponse';
-import * as middlewares from './middlewares';
+import * as middlewares from './middleware/errors';
 
 require('dotenv').config();
 
