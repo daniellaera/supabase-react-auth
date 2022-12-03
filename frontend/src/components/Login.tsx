@@ -37,8 +37,6 @@ const Login = () => {
         duration: 5000,
         isClosable: true
       });
-    } finally {
-      setLoadingGithub(false)
     }
   };
 

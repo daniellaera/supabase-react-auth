@@ -1,6 +1,6 @@
 import { Box, ChakraProvider, theme, useToast } from '@chakra-ui/react';
 import { AuthChangeEvent } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Invoices from './components/Invoices';
 import Login from './components/Login';
@@ -33,16 +33,16 @@ export const App = () => {
     }
   });
 
-  const showToast = (e: any) => {
+  const showToast = useCallback((e: any) => {
     toast({
-      position: 'bottom-left',
+      position: 'bottom',
       render: () => (
-        <Box color='white' p={3} bg='blue.500'>
-         { e === 'SIGNED_IN' ? `Signed In` : `SIgned Out`}
+        <Box color='white' p={3} bg='green.500'>
+          {e === 'SIGNED_IN' ? `Signed In` : `SIgned Out`}
         </Box>
       ),
     })
-  }
+  }, [toast]);
 
   useEffect(() => {
     if (event) showToast(event)
@@ -57,7 +57,7 @@ export const App = () => {
       }
     };
     setData()
-  }, [event])
+  }, [event, showToast])
 
   return (
     <ChakraProvider theme={theme}>
@@ -81,11 +81,11 @@ export const App = () => {
             />
             <Route path="/invoices" element={<Invoices />} />
             <Route path="/profile" element={
-                <ProtectedRoute signedIn={signedIn}>
-                  <ProfileLayout />
-                </ProtectedRoute>
-              }>
-                <Route index element={<ProfilePage />} />
+              <ProtectedRoute signedIn={signedIn}>
+                <ProfileLayout />
+              </ProtectedRoute>
+            }>
+              <Route index element={<ProfilePage />} />
             </Route>
             <Route path="/login" element={<Login />} />
           </Routes>
