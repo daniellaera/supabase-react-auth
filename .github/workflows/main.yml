@@ -8,8 +8,9 @@ jobs:
     name: Deploy App
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions@1.1
+      - uses: dorny/paths-filter@v2
         id: filter
         with:
           filters: |
@@ -18,7 +19,7 @@ jobs:
             frontend:
               - 'frontend/**'
 # run only if 'backend' files were changed
-    - name: backend delpoy
+    - name: backend deploy
       if: steps.filter.outputs.backend == 'true'
       run: ...
 
