@@ -9,26 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: backend
     steps:
       - uses: actions/checkout@v2
       - uses: superfly/flyctl-actions@1.1
         with:
           args: "deploy"
-        filters: |
-          src:
-            - './backend/**'
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./frontend
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v2
       - uses: superfly/flyctl-actions@1.1
         with:
           args: "deploy"
-        filters: |
-          src:
-            - './frontend/**'
