@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: superfly/flyctl-actions@1.1
+      - uses: superfly/flyctl-actions/setup-flyctl@master
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -21,9 +21,9 @@ jobs:
 # run only if 'backend' files were changed
       - name: backend deploy
         if: steps.filter.outputs.backend == 'true'
-        run: deploy
+        run: flyctl deploy --remote-only
 
     # run only if 'frontend' files were changed
       - name: frontend deploy
         if: steps.filter.outputs.frontend == 'true'
-        run: deploy
+        run: flyctl deploy --remote-only
