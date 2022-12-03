@@ -60,3 +60,6 @@ npm run dev
 Adding new field/s in schema.prisma, run ex: `prisma migrate dev --name add_public_field`
 
 Migrate on Supabase `npx prisma migrate reset --preview-feature`
+
+Push existing image to Fly registry
+https://medium.com/geekculture/deploy-docker-images-on-fly-io-free-tier-afbfb1d390b1
