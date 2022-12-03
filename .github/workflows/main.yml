@@ -7,9 +7,10 @@ jobs:
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: superfly/flyctl-actions/setup-flyctl@master
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -18,12 +19,19 @@ jobs:
               - 'backend/**'
             frontend:
               - 'frontend/**'
-# run only if 'backend' files were changed
-      - name: backend deploy
-        if: steps.filter.outputs.backend == 'true'
-        run: flyctl deploy
-
-    # run only if 'frontend' files were changed
-      - name: frontend deploy
-        if: steps.filter.outputs.frontend == 'true'
-        run: flyctl deploy
+  backend:
+    needs: deploy
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy
+  frontend:
+    needs: deploy
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy
