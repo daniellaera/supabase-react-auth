@@ -15,6 +15,9 @@ jobs:
       - uses: superfly/flyctl-actions@1.1
         with:
           args: "deploy"
+        filters: |
+          src:
+            - './backend/**'
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
@@ -26,3 +29,6 @@ jobs:
       - uses: superfly/flyctl-actions@1.1
         with:
           args: "deploy"
+        filters: |
+          src:
+            - './frontend/**'
