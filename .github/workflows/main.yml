@@ -22,7 +22,7 @@ jobs:
               - 'frontend/**'
   backend:
     needs: deploy
-    if: ${{ needs.changes.outputs.backend == 'true' }}
+    if: ${{ needs.deploy.outputs.backend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
       - run: flyctl deploy
   frontend:
     needs: deploy
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    if: ${{ needs.deploy.outputs.frontend == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
