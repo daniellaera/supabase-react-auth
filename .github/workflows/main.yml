@@ -21,9 +21,9 @@ jobs:
 # run only if 'backend' files were changed
     - name: backend deploy
       if: steps.filter.outputs.backend == 'true'
-      run: ...
+      run: deploy
 
     # run only if 'frontend' files were changed
     - name: frontend deploy
       if: steps.filter.outputs.frontend == 'true'
-      run: ...
+      run: deploy
