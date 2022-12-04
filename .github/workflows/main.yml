@@ -36,5 +36,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy
+      - run: |
+          touch .env
+          echo REACT_APP_SUPABASE_URL=${{ secrets.REACT_APP_SUPABASE_URL }} >> .env
+          flyctl deploy
         working-directory: ./frontend
