@@ -37,7 +37,7 @@ const WelcomePage = () => {
               rounded={'full'}
               color={'white'}
               _hover={{ bg: 'blue.500' }}>
-              Start connecting with other devs
+              Start connecting with others
             </Button>
             <Button
               bg={'whiteAlpha.300'}
