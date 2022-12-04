@@ -11,7 +11,7 @@ RUN mkdir /app
 WORKDIR /app
 
 ADD package.json package-lock.json ./
-RUN npm ci --only=production
+RUN npm install --production=false
 
 # Setup production node_modules
 FROM base as production-deps
