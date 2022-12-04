@@ -11,7 +11,7 @@ RUN mkdir /app
 WORKDIR /app
 
 ADD package.json package-lock.json ./
-RUN npm install --production=false
+RUN npm ci --only=production
 
 # Setup production node_modules
 FROM base as production-deps
@@ -55,7 +55,5 @@ COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
 
 COPY --from=build /app/dist ./dist
 ADD . .
-
-ENV DATABASE_URL "postgresql://postgres:only_for_me_2023@db.fwlekvzjrcebahremkit.supabase.co:5432/postgres"
 
 CMD ["node", "dist/src/index.js"]
