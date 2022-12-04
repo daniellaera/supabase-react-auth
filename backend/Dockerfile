@@ -56,7 +56,4 @@ COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
 COPY --from=build /app/dist ./dist
 ADD . .
 
-ARG DATABASE_URL
-ENV DATABASE_URL "$DATABASE_URL"
-
 CMD ["node", "dist/src/index.js"]
