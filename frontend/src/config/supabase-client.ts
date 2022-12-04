@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js';
-require('dotenv').config();
 
 const supabaseUrl: string = process.env.REACT_APP_SUPABASE_URL!;
 const supabaseAnonKey: string = process.env.REACT_APP_SUPABASE_ANON_KEY!;
