@@ -57,6 +57,6 @@ COPY --from=build /app/dist ./dist
 ADD . .
 
 ARG DATABASE_URL
-ENV DATABASE_URL "https://$DATABASE_URL"
+ENV DATABASE_URL $DATABASE_URL
 
 CMD ["node", "dist/src/index.js"]
