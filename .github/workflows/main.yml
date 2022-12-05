@@ -12,7 +12,7 @@ jobs:
       - name: 'Create env file'
         run: |
           echo "${{ secrets.REACT_APP_SUPABASE_URL }}" > .env
-
+          cat .env
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
