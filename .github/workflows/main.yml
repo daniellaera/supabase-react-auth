@@ -15,7 +15,7 @@ jobs:
           envkey_DEBUG: false
           envkey_REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
           some_other_variable: foobar
-          directory: ./frontend
+          directory: frontend
           file_name: .env
           fail_on_empty: false
 
