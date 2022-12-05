@@ -4,6 +4,22 @@ on: [push]
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 jobs:
+
+  create-envfile:
+    name: Spicy env file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_DEBUG: false
+          envkey_SOME_API_KEY: "123456abcdef"
+          envkey_SECRET_KEY: ${{ secrets.REACT_APP_SUPABASE_URL }}
+          some_other_variable: foobar
+          directory: ./frontend
+          file_name: .env
+          fail_on_empty: false
+
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
@@ -36,7 +52,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: |
-          echo 'TOKEN1=${{ secrets.REACT_APP_SUPABASE_URL }}' >> ./backend/.env
       - run: flyctl deploy
         working-directory: ./frontend
