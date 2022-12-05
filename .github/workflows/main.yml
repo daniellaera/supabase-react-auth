@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Create env file'
-        working-directory: ./frontend
+        working-directory: frontend
         run: |
           echo "${{ secrets.REACT_APP_SUPABASE_URL }}" > .env
           cat .env
