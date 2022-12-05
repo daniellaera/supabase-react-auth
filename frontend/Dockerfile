@@ -7,9 +7,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-ARG REACT_APP_SUPABASE_URL
-ENV REACT_APP_SUPABASE_URL $REACT_APP_SUPABASE_URL
-
 ENV NODE_ENV production
 
 FROM nginx:1.19
