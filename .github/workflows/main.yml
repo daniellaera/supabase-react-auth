@@ -3,7 +3,7 @@ on: [push]
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  REACT_APP_SUPABASE_URL_ARG: ${{ secrets.REACT_APP_SUPABASE_URL }}
+  REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
 
 jobs:
   deploy:
