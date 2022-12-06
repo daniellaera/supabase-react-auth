@@ -17,9 +17,9 @@ jobs:
       - name: 'Create env file'
         working-directory: ./frontend
         run: |
-          echo -e  '${{ secrets.REACT_APP_SUPABASE_URL }}'' >> .env
-          echo -e  '${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}'' >> .env
-          echo -e  '${{ secrets.REACT_APP_BACKEND_URL }}'' >> .env
+          echo -e  '${{ secrets.REACT_APP_SUPABASE_URL }}' >> .env
+          echo -e  '${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}' >> .env
+          echo -e  '${{ secrets.REACT_APP_BACKEND_URL }}' >> .env
           cat .env
 
   deploy:
