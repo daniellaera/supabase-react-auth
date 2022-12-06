@@ -10,14 +10,14 @@ env:
 jobs:
 
   create-envfile:
-    - name: 'Create env file'
-      working-directory: ./frontend
-      run: |
-          cat .env
+    name: 'Create env file'
+    working-directory: ./frontend
+    run: |
           touch .env
           echo $REACT_APP_SUPABASE_URL >> .env
           echo $REACT_APP_SUPABASE_ANON_KEY >> .env
           echo $REACT_APP_BACKEND_URL >> .env
+          cat .env
 
   deploy:
     name: Deploy App
