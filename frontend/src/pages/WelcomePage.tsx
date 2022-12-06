@@ -44,7 +44,7 @@ const WelcomePage = () => {
               rounded={'full'}
               color={'white'}
               _hover={{ bg: 'whiteAlpha.500' }}>
-              Explore devs profiles
+              Explore others profiles
             </Button>
           </Stack>
         </Stack>

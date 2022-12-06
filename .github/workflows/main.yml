@@ -3,9 +3,9 @@ on: [push]
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  REACT_APP_SUPABASE_URL: ${{ secrets.REACT_APP_SUPABASE_URL }}
-jobs:
+  REACT_APP_SUPABASE_URL_ARG: ${{ secrets.REACT_APP_SUPABASE_URL }}
 
+jobs:
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
@@ -22,6 +22,7 @@ jobs:
               - 'backend/**'
             frontend:
               - 'frontend/**'
+
   backend:
     needs: deploy
     if: ${{ needs.deploy.outputs.backend == 'true' }}
@@ -31,6 +32,7 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy
         working-directory: ./backend
+        
   frontend:
     needs: deploy
     if: ${{ needs.deploy.outputs.frontend == 'true' }}
