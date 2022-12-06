@@ -40,5 +40,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy
+      - run: flyctl deploy --remote-only --build-arg REACT_APP_SUPABASE_URL=$REACT_APP_SUPABASE_URL
         working-directory: ./frontend
