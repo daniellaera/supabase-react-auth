@@ -29,7 +29,7 @@ const WelcomePage = () => {
             fontWeight={700}
             lineHeight={1.2}
             fontSize={useBreakpointValue({ base: '3xl', md: '4xl' })}>
-            DevConnector 🚀
+            DevConnector v3 🚀
           </Text>
           <Stack direction={'row'}>
             <Button
