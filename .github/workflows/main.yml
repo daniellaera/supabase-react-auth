@@ -45,5 +45,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy
+      - run: |
+          flyctl deploy --remote-only \
+          --build-secret REACT_APP_SUPABASE_URL=${{ secrets.REACT_APP_SUPABASE_URL }} \
+          --build-secret REACT_APP_SUPABASE_ANON_KEY=${{ secrets.REACT_APP_SUPABASE_ANON_KEY }} \
+          --build-secret REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL }}
         working-directory: ./frontend
