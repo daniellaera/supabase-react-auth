@@ -9,19 +9,6 @@ env:
 
 jobs:
 
-  create-envfile:
-    name: Spicy env file
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: 'Create env file'
-        working-directory: ./frontend
-        run: |
-          echo -e  '${{ secrets.REACT_APP_SUPABASE_URL }}' >> .env
-          echo -e  '${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}' >> .env
-          echo -e  '${{ secrets.REACT_APP_BACKEND_URL }}' >> .env
-          cat .env
-
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
