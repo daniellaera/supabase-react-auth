@@ -8,6 +8,17 @@ env:
   REACT_APP_BACKEND_URL: ${{ secrets.REACT_APP_BACKEND_URL }}
 
 jobs:
+
+  create-envfile:
+    - name: 'Create env file'
+      working-directory: ./frontend
+      run: |
+          cat .env
+          touch .env
+          echo $REACT_APP_SUPABASE_URL >> .env
+          echo $REACT_APP_SUPABASE_ANON_KEY >> .env
+          echo $REACT_APP_BACKEND_URL >> .env
+
   deploy:
     name: Deploy App
     runs-on: ubuntu-latest
