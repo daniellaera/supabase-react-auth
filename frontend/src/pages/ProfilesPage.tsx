@@ -38,7 +38,6 @@ import Profiles from '../components/Profiles';
   
     const color = useColorModeValue('white', 'gray.900');
     const color2 = useColorModeValue('gray.700', 'gray.400')
-    const color3 = useColorModeValue('gray.50', 'gray.800')
     const color4 = useColorModeValue('gray.100', 'gray.700')
 
     const { data, error, isError, isLoading } = useQuery('profiles', fetchProfiles)
