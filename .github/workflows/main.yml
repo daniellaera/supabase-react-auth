@@ -49,4 +49,4 @@ jobs:
             --build-arg REACT_APP_SUPABASE_URL=${{ secrets.REACT_APP_SUPABASE_URL }}
             --build-arg REACT_APP_SUPABASE_ANON_KEY=${{ secrets.REACT_APP_SUPABASE_ANON_KEY }}
             --build-arg REACT_APP_BACKEND_URL=${{ secrets.REACT_APP_BACKEND_URL }}"
-        working-directory: ./frontend
+      working-directory: ./frontend
