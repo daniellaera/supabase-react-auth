@@ -16,7 +16,7 @@ RUN echo ${NODE_ENV}
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN NODE_ENV=${NODE_ENV} REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL} REACT_APP_SUPABASE_ANON_KEY=${REACT_APP_SUPABASE_ANON_KEY} REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL} npm run build
+RUN npm run build
 
 FROM nginx:1.19
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
