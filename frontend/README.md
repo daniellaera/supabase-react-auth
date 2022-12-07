@@ -7,6 +7,9 @@ In the project directory, you can run:
 
 ### `npm start`
 
+Mastering React Mutations
+https://tkdodo.eu/blog/mastering-mutations-in-react-query
+
 Runs the app in the development mode.<br /> Open
 [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
