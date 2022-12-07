@@ -7,7 +7,7 @@ import Login from './components/Login';
 import NotFound from './components/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import RootLayout from './components/RootLayout';
-import Test from './components/Test';
+import ProfilesLayout from './components/ProfilesLayout';
 import { supabaseClient } from './config/supabase-client';
 import NewPostPage from './pages/NewPostPage';
 import PostDetailPage from './pages/PostDetailPage';
@@ -16,6 +16,7 @@ import PostPage from './pages/PostPage';
 import ProfileLayout from './pages/ProfileLayout';
 import ProfilePage from './pages/ProfilePage';
 import WelcomePage from './pages/WelcomePage';
+import ProfilesPage from './pages/ProfilesPage';
 
 export const App = () => {
   const [signedIn, setSignedIn] = useState<boolean>(true);
@@ -65,7 +66,9 @@ export const App = () => {
         <RootLayout>
           <Routes>
             <Route path="/" element={<WelcomePage />} />
-            <Route path="/test" element={<Test />} />
+            <Route path="/profiles" element={<ProfilesLayout />}>
+              <Route index element={<ProfilesPage />} />
+            </Route>
             <Route path='*' element={<NotFound />} />
             <Route path="/posts" element={<PostLayout />}>
               <Route index element={<PostPage />} />

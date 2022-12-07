@@ -4,12 +4,9 @@ const baseUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/posts`;
 const profileUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/profile`;
 const pictureUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/picture`;
 
-export async function getPosts() {
-  const response = await fetch(baseUrl);
-  if (!response.ok) {
-    throw new Error('Failed to fetch posts.');
-  }
-  return response.json();
+export async function fetchProfiles() {
+  const { data } = await axios.get(profileUrl);
+  return data;
 }
 
 export async function fetchPosts() {

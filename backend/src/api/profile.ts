@@ -3,6 +3,19 @@ import prisma from '../lib/prisma';
 
 const router = express.Router();
 
+router.get('/', async (req, res) => {
+  const profiles = await prisma.profile.findMany({
+    include: {
+      programmingLanguages: {
+        select: {
+          language: true,
+        },
+      },
+    },
+  });
+  res.status(200).json(profiles);
+});
+
 router.post('/create', async (req, res) => {
   const { username, website, authorEmail, programmingLanguages, company } = req.body;
 

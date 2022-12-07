@@ -166,8 +166,8 @@ const MainNavigation = () => {
               Invoices
             </NavLink>
 
-            <NavLink to="/test" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Test
+            <NavLink to="/profiles" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
+              Profiles
             </NavLink>
 
             <NavLink to="/posts" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
