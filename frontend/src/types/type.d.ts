@@ -50,6 +50,7 @@ type ApiDataType = {
   todo?: IPost;
   profile?: IProfile
   picture?: IPicture
+  profiles: IProfile[]
 };
 
 type GetPostsResponse = {

@@ -4,8 +4,8 @@ const baseUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/posts`;
 const profileUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/profile`;
 const pictureUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/picture`;
 
-export async function fetchProfiles() {
-  const { data } = await axios.get(profileUrl);
+export async function getProfiles() {
+  const  {data}  = await axios.get(profileUrl);
   return data;
 }
 
