@@ -332,7 +332,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
                 <AlertDialogOverlay>
                   <AlertDialogContent>
                     <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-                      Delete Customer
+                    Publish Profile
                     </AlertDialogHeader>
 
                     <AlertDialogBody>

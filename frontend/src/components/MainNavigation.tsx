@@ -157,92 +157,92 @@ const MainNavigation = () => {
               as={'nav'}
               spacing={4}
               display={{ base: 'none', md: 'flex' }}>
-              <NavLink to="/" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              <Button leftIcon={<FaHome />} colorScheme='teal' variant='ghost' size={'sm'} mr={4}>
-                Home
-              </Button>
-            </NavLink>
-            <NavLink to="/invoices" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Invoices
-            </NavLink>
-
-            <NavLink to="/profiles" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Profiles
-            </NavLink>
-
-            <NavLink to="/posts" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Posts
-            </NavLink>
-
-            <NavLink to="/profile" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Profile
-            </NavLink>
+              <NavLink to="/" style={({ isActive }) => ({
+                color: isActive ? 'cyan' : '',
+              })} end>
+                <Button leftIcon={<FaHome />} size={'sm'} mr={4}>
+                  Home
+                </Button>
+              </NavLink>
+              <NavLink style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} to="/invoices" end>
+                Invoices
+              </NavLink>
+              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Profiles
+              </NavLink>
+              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Posts
+              </NavLink>
+              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Profile
+              </NavLink>
             </HStack>
           </HStack>
           <Flex alignItems={'center'}>
-          {session ? (
-            <>
-              <Button
-                onClick={() => supabaseClient.auth.signOut()}
-                variant={'solid'}
-                colorScheme={'teal'}
-                size={'sm'}
-                mr={4}
-                leftIcon={<FiLogOut />}>
-                Logout
-              </Button>
-              <Menu>
-                <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
-                  <HStack>
-                    <Avatar size={'sm'} src={avatar_url ? imageUrl : ''} />
-                    <VStack display={{ base: 'none', md: 'flex' }} alignItems="flex-start" spacing="1px" ml="2">
-                      <Text fontSize="sm">{username}</Text>
-                      <Text fontSize="xs" color="gray.600">
-                        Admin
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </MenuButton>
-                <MenuList>
-                  <NavLink to="/profile" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-                    <MenuItem>Profile</MenuItem>
-                  </NavLink>
+            {session ? (
+              <>
+                <Button
+                  onClick={() => supabaseClient.auth.signOut()}
+                  variant={'solid'}
+                  colorScheme={'teal'}
+                  size={'sm'}
+                  mr={4}
+                  leftIcon={<FiLogOut />}>
+                  Logout
+                </Button>
+                <Menu>
+                  <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
+                    <HStack>
+                      <Avatar size={'sm'} src={avatar_url ? imageUrl : ''} />
+                      <VStack display={{ base: 'none', md: 'flex' }} alignItems="flex-start" spacing="1px" ml="2">
+                        <Text fontSize="sm">{username}</Text>
+                        <Text fontSize="xs" color="gray.600">
+                          Admin
+                        </Text>
+                      </VStack>
+                    </HStack>
+                  </MenuButton>
+                  <MenuList>
+                    <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                      <MenuItem>Profile</MenuItem>
+                    </NavLink>
 
-                  <MenuItem>Settings</MenuItem>
-                  <MenuItem>Billing</MenuItem>
-                  <MenuDivider />
-                  <MenuItem onClick={() => supabaseClient.auth.signOut()}>Sign out</MenuItem>
-                </MenuList>
-              </Menu>
-            </>
-          ) : (
-            <NavLink to="/login" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Login
-            </NavLink>
-          )}
-          <ColorModeSwitcher justifySelf="flex-end" marginLeft={4} />
-        </Flex>
+                    <MenuItem>Settings</MenuItem>
+                    <MenuItem>Billing</MenuItem>
+                    <MenuDivider />
+                    <MenuItem onClick={() => supabaseClient.auth.signOut()}>Sign out</MenuItem>
+                  </MenuList>
+                </Menu>
+              </>
+            ) : (
+              <NavLink to="/login" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Login
+              </NavLink>
+            )}
+            <ColorModeSwitcher justifySelf="flex-end" marginLeft={4} />
+          </Flex>
         </Flex>
 
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-            <NavLink to="/" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              <Button leftIcon={<FaHome />} colorScheme='teal' variant='ghost' size={'sm'} mr={4}>
-                Home
-              </Button>
-            </NavLink>
-            <NavLink to="/invoices" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Invoices
-            </NavLink>
-
-            <NavLink to="/posts" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Posts
-            </NavLink>
-
-            <NavLink to="/profile" className={({ isActive }) => (isActive ? classes.active : undefined)} end>
-              Profile
-            </NavLink>
+              <NavLink to="/" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                <Button leftIcon={<FaHome />} size={'sm'} mr={4}>
+                  Home
+                </Button>
+              </NavLink>
+              <NavLink to="/invoices" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Invoices
+              </NavLink>
+              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Profiles
+              </NavLink>
+              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Posts
+              </NavLink>
+              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                Profile
+              </NavLink>
             </Stack>
           </Box>
         ) : null}
