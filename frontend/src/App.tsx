@@ -3,7 +3,6 @@ import { AuthChangeEvent } from '@supabase/supabase-js';
 import { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Invoices from './components/Invoices';
-import Login from './components/Login';
 import NotFound from './components/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import RootLayout from './components/RootLayout';
@@ -17,6 +16,7 @@ import ProfileLayout from './pages/ProfileLayout';
 import ProfilePage from './pages/ProfilePage';
 import WelcomePage from './pages/WelcomePage';
 import ProfilesPage from './pages/ProfilesPage';
+import Signin from './components/Auth/Signin';
 
 export const App = () => {
   const [signedIn, setSignedIn] = useState<boolean>(true);
@@ -90,7 +90,7 @@ export const App = () => {
             }>
               <Route index element={<ProfilePage />} />
             </Route>
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Signin />} />
           </Routes>
         </RootLayout>
       </BrowserRouter>

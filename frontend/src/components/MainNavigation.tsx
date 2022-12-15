@@ -158,22 +158,22 @@ const MainNavigation = () => {
               spacing={4}
               display={{ base: 'none', md: 'flex' }}>
               <NavLink to="/" style={({ isActive }) => ({
-                color: isActive ? 'cyan' : '',
+                color: isActive ? 'lightblue' : '',
               })} end>
                 <Button leftIcon={<FaHome />} size={'sm'} mr={4}>
                   Home
                 </Button>
               </NavLink>
-              <NavLink style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} to="/invoices" end>
+              <NavLink style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} to="/invoices" end>
                 Invoices
               </NavLink>
-              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Profiles
               </NavLink>
-              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Posts
               </NavLink>
-              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Profile
               </NavLink>
             </HStack>
@@ -203,7 +203,7 @@ const MainNavigation = () => {
                     </HStack>
                   </MenuButton>
                   <MenuList>
-                    <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+                    <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                       <MenuItem>Profile</MenuItem>
                     </NavLink>
 
@@ -215,7 +215,7 @@ const MainNavigation = () => {
                 </Menu>
               </>
             ) : (
-              <NavLink to="/login" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/login" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Login
               </NavLink>
             )}
@@ -226,21 +226,21 @@ const MainNavigation = () => {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              <NavLink to="/" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 <Button leftIcon={<FaHome />} size={'sm'} mr={4}>
                   Home
                 </Button>
               </NavLink>
-              <NavLink to="/invoices" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/invoices" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Invoices
               </NavLink>
-              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Profiles
               </NavLink>
-              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Posts
               </NavLink>
-              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'cyan' : ''})} end>
+              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
                 Profile
               </NavLink>
             </Stack>
