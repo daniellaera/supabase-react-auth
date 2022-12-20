@@ -178,6 +178,7 @@ export const Signin = () => {
       } else {
         setUser(data.user)
         setSession(data.session)
+        navigate("/profile");
       }
     } catch (err) {
       throw err;
@@ -185,7 +186,6 @@ export const Signin = () => {
       setEmail('')
       setPassword('')
       setLoading(false);
-      navigate("/profile");
     }
   }
 
@@ -214,6 +214,7 @@ export const Signin = () => {
           duration: 5000,
           isClosable: true
         })
+        navigate("/profile");
       }
     } catch (err) {
       // console.log(err)
@@ -222,7 +223,6 @@ export const Signin = () => {
       setEmail('')
       setPassword('')
       setLoading(false);
-      navigate("/profile");
     }
 
   }
