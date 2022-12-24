@@ -69,12 +69,7 @@ const PersonalAvatar = ({ url, onUpload, disabled }: any) => {
 
   return (
     <>
-      <Flex
-        justifyContent="center"
-        alignItems="center"
-        h="216px"
-        w="full"
-        overflow="hidden">
+      <Flex justifyContent="center" alignItems="center" h="216px" w="full" overflow="hidden">
         <Box
           as="div"
           position="relative"
@@ -91,21 +86,12 @@ const PersonalAvatar = ({ url, onUpload, disabled }: any) => {
             marginTop: '-100%',
             borderRadius: '50%',
             bgColor: color,
-            animation: `2.25s ${pulseRing} cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite`,
+            animation: `2.25s ${pulseRing} cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite`
           }}>
-          <Avatar
-            src={avatarUrl}
-            size="full"
-            position="absolute"
-            top={0}
-          /></Box>
-
+          <Avatar src={avatarUrl} size="full" position="absolute" top={0} />
+        </Box>
       </Flex>
-      <Box
-        textAlign={
-          'center'
-        }
-        overflow="hidden">
+      <Box textAlign={'center'} overflow="hidden">
         <Tooltip isDisabled={!disabled} placement="left" hasArrow label={UPLOAD_PICTURE_DISABLED_TEXT} bg={'green.600'}>
           <Button
             disabled={disabled}
@@ -116,12 +102,12 @@ const PersonalAvatar = ({ url, onUpload, disabled }: any) => {
             rounded={'full'}
             _focus={{
               bg: 'gray.200'
-            }}
-          >
+            }}>
             <label className="button primary block" htmlFor="single">
               {uploading ? 'Uploading ...' : 'Upload'}
             </label>
-          </Button></Tooltip>
+          </Button>
+        </Tooltip>
         <input
           style={{
             visibility: 'hidden',

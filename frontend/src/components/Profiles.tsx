@@ -2,42 +2,37 @@ import {
   Heading,
   Avatar,
   Box,
-  Center,
   Text,
   Stack,
   Button,
-  Link,
-  Badge,
   useColorModeValue,
   Card,
   CardHeader,
   Flex,
   IconButton,
   CardBody,
-  Image,
   CardFooter,
-  useToast,
-  Progress,
   Container,
   SimpleGrid,
   Tag
 } from '@chakra-ui/react';
-import { BiChat, BiLike, BiShare } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import ProfileAvatar from './ProfileAvatar';
 
 const Profiles = ({ profiles }: any) => {
+
   const followColor = useColorModeValue('gray.400', 'gray.900');
 
   return (
     <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
       <SimpleGrid minChildWidth="120px" spacing="40px" templateColumns="repeat(auto-fill, minmax(400px, 1fr))">
-        {profiles.map(({ id, username, company, authorEmail, website, programmingLanguages }: IProfile, i: number) => (
+        {profiles.map(({ username, company, authorEmail, website, programmingLanguages, picture }: IProfile, i: number) => (
           <Box key={i}>
             <Card>
               <CardHeader>
                 <Flex>
                   <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                    <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
+                    <ProfileAvatar url={picture?.avatarUrl} />
 
                     <Box>
                       <Heading size="sm">

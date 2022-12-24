@@ -35,7 +35,7 @@ interface IProfile {
   createdAt?: string;
   updatedAt?: string;
   isPublic?: boolean;
-  avatarUrl?: string;
+  picture?: IPicture;
   programmingLanguages: IProgrammingLanguage[];
 }
 

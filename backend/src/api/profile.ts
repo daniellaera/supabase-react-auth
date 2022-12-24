@@ -11,6 +11,11 @@ router.get('/', async (req, res) => {
           language: true,
         },
       },
+      picture: {
+        select: {
+          avatarUrl: true,
+        },
+      },
     },
   });
   res.status(200).json(profiles);
