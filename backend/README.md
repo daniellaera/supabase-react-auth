@@ -63,3 +63,6 @@ Migrate on Supabase `npx prisma migrate reset --preview-feature`
 
 Push existing image to Fly registry
 https://medium.com/geekculture/deploy-docker-images-on-fly-io-free-tier-afbfb1d390b1
+
+Listing secrets example `flyctl secrets list`
+Setting secrets example ` flyctl secrets set REACT_APP_SUPABASE_JWT_SECRET=`
