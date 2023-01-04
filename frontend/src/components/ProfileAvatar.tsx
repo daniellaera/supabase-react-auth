@@ -2,7 +2,12 @@ import { Avatar } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { supabaseClient } from '../config/supabase-client';
 
-const ProfileAvatar = ({ url }: any) => {
+interface ProfileAvatarProps {
+  avatarName: string | undefined;
+  url: string | undefined;
+}
+
+const ProfileAvatar = ({ url, avatarName }: ProfileAvatarProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string>();
 
   useEffect(() => {
@@ -22,7 +27,7 @@ const ProfileAvatar = ({ url }: any) => {
     }
   }
 
-  return <Avatar src={avatarUrl} />;
+  return <Avatar src={avatarUrl} name={avatarName} />;
 };
 
 export default ProfileAvatar;

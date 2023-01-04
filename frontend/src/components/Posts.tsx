@@ -16,6 +16,7 @@ import moment from 'moment';
 import { truncate } from '../utils/functions';
 import { ReadmoreButton } from './ReadMoreButton';
 import LikeButton from './LikeButton';
+import ProfileAvatar from './ProfileAvatar';
 
 function Posts({ posts }: any) {
   const color = useColorModeValue('white', 'gray.900');
@@ -32,7 +33,7 @@ function Posts({ posts }: any) {
                 <Text color={'gray.500'}>{content}</Text>
               </Stack>
               <Stack mt={10} direction={'row'} spacing={4} align={'center'}>
-                <Avatar src="" name={truncate(profile.authorEmail)} />
+              <ProfileAvatar url={profile.picture.avatarUrl} avatarName={truncate(profile.authorEmail)} />
                 <Stack direction={'column'} spacing={0} fontSize={'sm'}>
                   <Text fontWeight={600}>{profile.authorEmail}</Text>
                   <Text color={'gray.500'}>{moment(createdAt).format('Do MMMM YYYY')}</Text>
@@ -58,7 +59,7 @@ function Posts({ posts }: any) {
                 </Stack>
               </Stack>
               <Stack justify={'end'} mt={8} direction={'row'} spacing={4}>
-                <LikeButton />
+                <LikeButton isDisabled={true}/>
                 <ReadmoreButton postId={id} />
               </Stack>
 

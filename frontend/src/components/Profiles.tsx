@@ -17,6 +17,7 @@ import {
   Tag
 } from '@chakra-ui/react';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { truncate } from '../utils/functions';
 import ProfileAvatar from './ProfileAvatar';
 
 const Profiles = ({ profiles }: any) => {
@@ -32,8 +33,7 @@ const Profiles = ({ profiles }: any) => {
               <CardHeader>
                 <Flex>
                   <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-                    <ProfileAvatar url={picture?.avatarUrl} />
-
+                    <ProfileAvatar url={picture?.avatarUrl} avatarName={truncate(authorEmail)} />
                     <Box>
                       <Heading size="sm">
                         {username} - {authorEmail}

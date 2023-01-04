@@ -87,7 +87,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
       website: website,
       username: username,
       company: company,
-      authorEmail: user?.email,
+      authorEmail: user?.email!,
       programmingLanguages: languages!
     };
     return await createProfile(profile);
@@ -113,7 +113,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
       website: website,
       username: username,
       company: company,
-      authorEmail: user?.email,
+      authorEmail: user?.email!,
       id: profileId!,
       programmingLanguages: languages!
     };

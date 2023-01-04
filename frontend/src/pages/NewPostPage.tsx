@@ -65,7 +65,6 @@ function NewPostPage() {
       title: postTitle,
       content: postContent,
       profileId: profile?.id!,
-      authorEmail: user?.email!
     }
     return await addPost(post, session?.access_token!);
   }

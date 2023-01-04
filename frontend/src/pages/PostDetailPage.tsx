@@ -17,6 +17,8 @@ import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { getPost } from '../api';
+import LikeButton from '../components/LikeButton';
+import ProfileAvatar from '../components/ProfileAvatar';
 
 const PostDetailPage = () => {
   const color = useColorModeValue('white', 'gray.900');
@@ -30,7 +32,6 @@ const PostDetailPage = () => {
 
   const { data, error, isError, isLoading } = useQuery('post', fetchPost, {
     enabled: true, retry: 2, cacheTime: 0, onSuccess(res: any) {
-      //console.log(res)
       setPost(res.data)
     },
     onError: (error: any) => {
@@ -72,20 +73,15 @@ const PostDetailPage = () => {
             </Stack>
 
             <Stack mt={10} direction={'row'} spacing={4} align={'center'}>
-              <Avatar src={'https://avatars0.githubusercontent.com/u/1164541?v=4'} />
+              <ProfileAvatar url={post?.profile?.picture?.avatarUrl} avatarName={post?.profile?.authorEmail} />
               <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-                <Text fontWeight={600}>authorEmail</Text>
+                <Text fontWeight={600}>{post?.profile?.authorEmail}</Text>
                 <Text color={'gray.500'}>{moment(post?.createdAt).format('Do MMMM YYYY')}</Text>
               </Stack>
             </Stack>
 
-            <Stack direction={'row'} justify={'center'} spacing={6}>
-              <Stack spacing={0} align={'center'}>
-                <Text fontSize={'sm'} color={'gray.500'}>
-                  {5}
-                </Text>
-                {/* <LikeButton childToParent={handleClick} id={id} authorId={authorId} /> */}
-              </Stack>
+            <Stack justify={'end'} direction={'row'} spacing={4}>
+              <LikeButton isDisabled={false}/>
             </Stack>
 
           </Box>

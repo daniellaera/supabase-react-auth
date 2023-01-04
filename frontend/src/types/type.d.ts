@@ -1,6 +1,5 @@
 interface IPost {
   id: number;
-  authorEmail: string;
   title: string;
   content: string;
   status?: boolean;
@@ -8,6 +7,7 @@ interface IPost {
   updatedAt?: string;
   accToken?: string;
   profileId: number;
+  profile?: IProfile;
 }
 
 interface IProgrammingLanguage {
@@ -28,7 +28,7 @@ interface IPicture {
 
 interface IProfile {
   id: number;
-  authorEmail: string | undefined;
+  authorEmail: string;
   website: string;
   username: string;
   company: string;
