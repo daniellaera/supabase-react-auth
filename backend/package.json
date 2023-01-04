@@ -34,7 +34,7 @@
     "@types/jest": "^28.1.8",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/morgan": "^1.9.3",
-    "@types/node": "^18.7.23",
+    "@types/node": "^18.11.18",
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.34.0",
     "@typescript-eslint/parser": "^5.34.0",

@@ -5,18 +5,24 @@ import { auth } from '../middleware/auth';
 const router = express.Router();
 
 router.get('/', async (req, res) => {
-  const posts = await prisma.post.findMany();
+  const posts = await prisma.post.findMany({
+    include: {
+      profile: {
+        select: { authorEmail: true },
+      },
+    },
+  });
   res.status(200).json(posts);
 });
 
 router.post('/create', auth, async (req, res) => {
-  const { title, content, authorEmail } = req.body;
+  const { title, content, profileId } = req.body;
   try {
     const result = await prisma.post.create({
       data: {
         title,
         content,
-        authorEmail,
+        profileId: profileId,
       },
     });
     res.status(200).json(result);

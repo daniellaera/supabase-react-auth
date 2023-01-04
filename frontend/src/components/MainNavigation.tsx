@@ -29,8 +29,6 @@ import { ColorModeSwitcher } from '../ColorModeSwitcher';
 import { supabaseClient } from '../config/supabase-client';
 import eventBus from '../eventBus';
 
-import classes from './MainNavigation.module.css';
-
 const MainNavigation = () => {
   const [session, setSession] = useState<Session | null>();
   const [avatar_url, setAvatarUrl] = useState<any>();

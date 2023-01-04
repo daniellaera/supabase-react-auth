@@ -28,21 +28,10 @@ export const getProfileByAuthorEmail = async (authorEmail: string): Promise<Axio
   }
 };
 
-export const addTodo = async (formData: any): Promise<AxiosResponse<ApiDataType>> => {
-  try {
-    const todo: Omit<IPost, 'id'> = {
-      title: formData.title,
-      content: formData.content,
-      authorEmail: formData.authorEmail
-    };
-    const saveTodo: AxiosResponse = await axios.post(baseUrl + '/create', todo, {
-      headers: { Authorization: `token ${formData.accToken}` }
-    });
-    return saveTodo;
-  } catch (error: any) {
-    throw new Error(error);
-  }
-};
+export async function addPost(post: Omit<IPost, 'id'>, accToken: string) {
+  const response = await axios.post(`${baseUrl}/create`, post, {headers: { Authorization: `token ${accToken}` }});
+  return response;
+}
 
 export const deleteTodo = async (id: number): Promise<AxiosResponse> => {
   try {

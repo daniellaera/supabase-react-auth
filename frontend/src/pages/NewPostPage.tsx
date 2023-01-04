@@ -1,9 +1,9 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabaseClient } from '../config/supabase-client';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { AxiosResponse } from 'axios';
-import { addTodo } from '../api';
+import { addPost, getProfileByAuthorEmail } from '../api';
 import { Session, User } from '@supabase/supabase-js';
 import { Button, Container, Flex, FormControl, Heading, Input, Stack, useColorModeValue, useToast } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
@@ -17,19 +17,37 @@ function NewPostPage() {
   const [error, setError] = useState(false);
   const toast = useToast();
   const navigate = useNavigate()
+  const [profile, setProfile] = useState<IProfile>()
+
+  const fetchProfile = async () => {
+    const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(session?.user.email!)
+    return res.data;
+  };
+
+  const { data: profileData, isLoading: isFetchingProfile, refetch } = useQuery(['profile'], fetchProfile, {
+    enabled: false, onSuccess(res: IProfile) {
+    },
+    onError: (err) => {
+      console.log(err)
+    }
+  });
 
   useEffect(() => {
     const setData = async () => {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw error;
       setSession(session);
-      //console.log(session?.access_token)
+      // console.log(JSON.stringify(session?.access_token))
     };
 
     setData();
   }, []);
 
   useEffect(() => {
+    if (profileData) {
+      setProfile(profileData)
+    }
+
     // declare the data fetching function
     const fetchUserData = async () => {
       const { data: { user } } = await supabaseClient.auth.getUser()
@@ -40,11 +58,19 @@ function NewPostPage() {
     fetchUserData()
       // make sure to catch any error
       .catch(console.error);
-  }, [])
+  }, [profileData])
 
-  const createTodo = (): Promise<AxiosResponse> => addTodo({ title: postTitle, content: postContent, authorEmail: user?.email, accToken: session?.access_token })
+  const createPost = async (): Promise<AxiosResponse> => {
+    const post: Omit<IPost, 'id'> = {
+      title: postTitle,
+      content: postContent,
+      profileId: profile?.id!,
+      authorEmail: user?.email!
+    }
+    return await addPost(post, session?.access_token!);
+  }
 
-  const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(createTodo, {
+  const { isLoading: isPostingTutorial, mutate: postTutorial } = useMutation(createPost, {
     onSuccess(res) {
       toast({
         title: 'Post created.',

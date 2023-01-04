@@ -1,36 +1,97 @@
-import { Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Center,
+  Heading,
+  Text,
+  Stack,
+  Avatar,
+  useColorModeValue,
+  Spinner,
+  Image,
+  Flex,
+} from '@chakra-ui/react';
+
 import { AxiosResponse } from 'axios';
+import moment from 'moment';
 import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import { getPost } from '../api';
 
 const PostDetailPage = () => {
-    //const [error, setError] = useState();
-    const [post, setPost] = useState<AxiosResponse<ApiDataType>>();
-  //const [isLoading, setIsLoading] = useState(false);
+  const color = useColorModeValue('white', 'gray.900');
+  const color2 = useColorModeValue('gray.700', 'white');
+
+  const [post, setPost] = useState<IPost>();
   const params = useParams();
   const { id } = params;
 
   const fetchPost = (): Promise<AxiosResponse> => getPost(Number(id))
-    
-  const { data, isLoading, error, isError } = useQuery(['post'], fetchPost, {onSuccess(res) {
+
+  const { data, error, isError, isLoading } = useQuery('post', fetchPost, {
+    enabled: true, retry: 2, cacheTime: 0, onSuccess(res: any) {
+      //console.log(res)
       setPost(res.data)
-  },})
+    },
+    onError: (error: any) => {
+      console.log(error)
+    },
+  })
 
   if (isLoading) {
     return <Spinner />
   }
+
   if (isError) {
     return <div>Error! {(error as Error).message}</div>
   }
 
   return (
-    <>
-      {isLoading && <p>Loading post...</p>}
-      {error && error}
-      {JSON.stringify(post)}
-    </>
+    <Flex align={'center'} justify={'center'}>
+      <Stack spacing={8} mx={'auto'} w={1200} py={6} px={6}>
+        <Center py={6}>
+          <Box maxW={'800px'} w={'full'} bg={color} boxShadow={'2xl'} rounded={'md'} p={6} overflow={'hidden'}>
+            <Stack>
+              <Text
+                color={'green.500'}
+                textTransform={'uppercase'}
+                fontWeight={800}
+                fontSize={'sm'}
+                letterSpacing={1.1}>
+                Blog
+              </Text>
+              <Heading
+                color={color2}
+                fontSize={'2xl'}
+                fontFamily={'body'}>
+                {post?.title}
+              </Heading>
+              <Text color={'gray.500'}>
+                {post?.content}
+              </Text>
+            </Stack>
+
+            <Stack mt={10} direction={'row'} spacing={4} align={'center'}>
+              <Avatar src={'https://avatars0.githubusercontent.com/u/1164541?v=4'} />
+              <Stack direction={'column'} spacing={0} fontSize={'sm'}>
+                <Text fontWeight={600}>authorEmail</Text>
+                <Text color={'gray.500'}>{moment(post?.createdAt).format('Do MMMM YYYY')}</Text>
+              </Stack>
+            </Stack>
+
+            <Stack direction={'row'} justify={'center'} spacing={6}>
+              <Stack spacing={0} align={'center'}>
+                <Text fontSize={'sm'} color={'gray.500'}>
+                  {5}
+                </Text>
+                {/* <LikeButton childToParent={handleClick} id={id} authorId={authorId} /> */}
+              </Stack>
+            </Stack>
+
+          </Box>
+        </Center>
+      </Stack>
+    </Flex>
   );
 }
 

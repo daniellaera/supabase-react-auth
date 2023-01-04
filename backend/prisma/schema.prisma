@@ -17,10 +17,11 @@ model Profile {
   username             String
   website              String
   company              String
-  authorEmail          String
+  authorEmail          String                 @unique
   isPublic             Boolean                @default(false)
   programmingLanguages ProgrammingLanguages[]
   picture              Picture?
+  posts                Post[]
 }
 
 model ProgrammingLanguages {
@@ -35,16 +36,17 @@ model ProgrammingLanguages {
 }
 
 model Post {
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  title       String
-  content     String?
-  published   Boolean   @default(false)
-  viewCount   Int       @default(0)
-  authorEmail String
-  likes       Like[]
-  comments    Comment[]
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  title     String
+  content   String?
+  published Boolean   @default(false)
+  viewCount Int       @default(0)
+  profileId Int?
+  profile   Profile?  @relation(fields: [profileId], references: [id])
+  likes     Like[]
+  comments  Comment[]
 }
 
 model Like {
