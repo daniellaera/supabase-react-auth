@@ -60,3 +60,5 @@ You can learn more in the
 [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+React-Query topics : https://stackoverflow.com/questions/67091583/react-query-how-can-i-access-my-queries-in-multiple-components

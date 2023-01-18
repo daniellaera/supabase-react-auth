@@ -225,7 +225,7 @@ const ProfileDetail = ({ childToParent }: Props) => {
                 <Input
                   type={'text'}
                   value={username || ''}
-                  onChange={(e: any) => handleUserNameChange(e)}
+                  onChange={(e: any) => setUsername(e.target.value)}
                   placeholder={username || 'username'}
                   color={color}
                   bg={bgColor}

@@ -134,7 +134,6 @@ export const Signin = () => {
 
   const consoleGoogle = () => {
     console.log('Login with google...')
-
   }
 
   const signGithub = () => {
@@ -178,7 +177,7 @@ export const Signin = () => {
       } else {
         setUser(data.user)
         setSession(data.session)
-        navigate("/profile");
+        navigate("/invoices");
       }
     } catch (err) {
       throw err;

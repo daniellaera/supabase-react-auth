@@ -5,9 +5,10 @@ import { supabaseClient } from '../config/supabase-client';
 interface ProfileAvatarProps {
   avatarName: string | undefined;
   url: string | undefined;
+  avatarSize?: string;
 }
 
-const ProfileAvatar = ({ url, avatarName }: ProfileAvatarProps) => {
+const ProfileAvatar = ({ url, avatarName, avatarSize }: ProfileAvatarProps) => {
   const [avatarUrl, setAvatarUrl] = useState<string>();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const ProfileAvatar = ({ url, avatarName }: ProfileAvatarProps) => {
     }
   }
 
-  return <Avatar src={avatarUrl} name={avatarName} />;
+  return <Avatar src={avatarUrl} name={avatarName} size={avatarSize}/>;
 };
 
 export default ProfileAvatar;

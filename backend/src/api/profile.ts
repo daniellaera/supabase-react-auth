@@ -80,6 +80,7 @@ router.get('/findProfileByEmail/:authorEmail', async (req, res) => {
             language: true,
           },
         },
+        picture: { select: { avatarUrl: true } },
       },
     });
     res.json(profile);

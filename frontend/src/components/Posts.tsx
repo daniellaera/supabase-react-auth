@@ -24,7 +24,7 @@ function Posts({ posts }: any) {
   return (
     <Box bg={useColorModeValue('gray.100', 'gray.700')}>
       <Container maxW={'7xl'} py={16} as={Stack} spacing={12}>
-        {posts.map(({ id, createdAt, title, content, profile }: any, i: number) => (
+        {posts.map(({ id, createdAt, title, content, profile, likes }: any, i: number) => (
           <Center key={i} py={6}>
             <Box maxW={'800px'} w={'full'} bg={color} boxShadow={'2xl'} rounded={'md'} p={6} overflow={'hidden'}>
               <Stack>
@@ -33,7 +33,7 @@ function Posts({ posts }: any) {
                 <Text color={'gray.500'}>{content}</Text>
               </Stack>
               <Stack mt={10} direction={'row'} spacing={4} align={'center'}>
-              <ProfileAvatar url={profile.picture.avatarUrl} avatarName={truncate(profile.authorEmail)} />
+              <ProfileAvatar url={profile?.picture?.avatarUrl} avatarName={truncate(profile.authorEmail)} />
                 <Stack direction={'column'} spacing={0} fontSize={'sm'}>
                   <Text fontWeight={600}>{profile.authorEmail}</Text>
                   <Text color={'gray.500'}>{moment(createdAt).format('Do MMMM YYYY')}</Text>
@@ -46,10 +46,6 @@ function Posts({ posts }: any) {
 
               <Stack direction={'row'} justify={'center'} spacing={6}>
                 <Stack spacing={0} align={'center'}>
-                  {/* <Text fontSize={'sm'} color={'gray.500'}>
-                                    {likes?.length}
-                                </Text> */}
-
                 </Stack>
                 <Stack spacing={0} align={'center'}>
                   {/* <Text fontSize={'sm'} color={'gray.500'}>
@@ -59,7 +55,7 @@ function Posts({ posts }: any) {
                 </Stack>
               </Stack>
               <Stack justify={'end'} mt={8} direction={'row'} spacing={4}>
-                <LikeButton isDisabled={true}/>
+                <LikeButton isDisabled={true} likesCount={likes?.length}/>
                 <ReadmoreButton postId={id} />
               </Stack>
 

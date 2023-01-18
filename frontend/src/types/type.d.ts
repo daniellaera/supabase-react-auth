@@ -8,6 +8,7 @@ interface IPost {
   accToken?: string;
   profileId: number;
   profile?: IProfile;
+  likes?: ILike[];
 }
 
 interface IProgrammingLanguage {
@@ -24,6 +25,15 @@ interface IPicture {
   avatarUrl: string;
   createdAt?: string;
   updatedAt?: string;
+  accToken?: string;
+}
+
+interface ILike {
+  id: number;
+  profileId: number;
+  postId: number;
+  createdAt?: string;
+  accToken?: string;
 }
 
 interface IProfile {

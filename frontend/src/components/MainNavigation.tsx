@@ -17,7 +17,7 @@ import {
   useDisclosure,
   VStack
 } from '@chakra-ui/react';
-import { Session } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { FaHome } from 'react-icons/fa';
@@ -30,10 +30,10 @@ import { supabaseClient } from '../config/supabase-client';
 import eventBus from '../eventBus';
 
 const MainNavigation = () => {
+  const [user, setUser] = useState<User>()
   const [session, setSession] = useState<Session | null>();
   const [avatar_url, setAvatarUrl] = useState<any>();
   const [imageUrl, setImageUrl] = useState<string | undefined>();
-  const [username, setUsername] = useState<string | undefined>();
   const [profile, setProfile] = useState<IProfile>()
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -49,55 +49,40 @@ const MainNavigation = () => {
     //if (session) getAvatarUrl();
     //if (session) refetch()
     handleLocalStorage()
-  }, [session]);
+  }, []);
 
   const fetchProfile = async () => {
-    const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(session?.user.email!)
+    const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(user?.email!)
     return res.data;
   };
 
-  const { data: profileData, error, isLoading: isFetchingProfile, refetch } = useQuery(['profile'], fetchProfile, {
+  const { data: profileData, error, isLoading: isFetchingProfile, refetch: refetchProfile } = useQuery('profile', fetchProfile, {
     enabled: false, onSuccess(res: IProfile) {
-      if (res != null) {
-        setUsername(res.username)
-      }
+      setProfile(res)
     },
     onError: (err) => {
       console.log(err)
     }
   });
 
-  const fetchProfilePicture = async () => {
+ const fetchProfilePicture = async () => {
     const res: AxiosResponse<ApiDataType> = await getPictureByProfileId(profile?.id!)
     return res.data
   }
 
-  const { data: pictureData, isLoading, refetch: refetchPicture } = useQuery(['profilePicture'], fetchProfilePicture, {
-    enabled: false, onSuccess(res: IPicture) {
-
+  const { data: pictureData, isLoading, isError, refetch: refetchPicture } = useQuery(['profilePicture'], fetchProfilePicture, {
+    enabled: false, retry: 2, cacheTime: 0, onSuccess(res: IPicture) {
+      //setPicture(res)
     },
-    onError: () => {
+    onError: (error: any) => {
       console.log(error)
     }
   })
 
   useEffect(() => {
-    if (session) {
-      refetch()
-    }
-    if (profileData) {
-      setProfile(profileData)
-    }
-    if (profile) {
-      refetchPicture()
-    }
-    if (pictureData) {
-      setAvatarUrl(pictureData.avatarUrl)
-    }
+
     if (avatar_url) downloadImage(avatar_url);
-  }, [avatar_url, profile, pictureData, refetchPicture, profileData, session, refetch]);
-
-
+  }, [avatar_url]);
 
   async function downloadImage(path: any) {
     try {
@@ -116,19 +101,18 @@ const MainNavigation = () => {
   // and we reload the gravatar url
   eventBus.on('profileUpdated', (hasUpdated: boolean) => {
     if (hasUpdated) {
-      refetch()
+      refetchProfile()
       refetchPicture()
     }
   });
 
   useEffect(() => {
     const setData = async () => {
-      const {
-        data: { session },
-        error
-      } = await supabaseClient.auth.getSession();
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw error;
-      setSession(session);
+      if (session) {
+        setSession(session)
+      }
     };
 
     supabaseClient.auth.onAuthStateChange((_event, session) => {
@@ -137,6 +121,18 @@ const MainNavigation = () => {
 
     setData();
   }, []);
+
+  useEffect(() => {
+    
+   if (profile) {
+    setAvatarUrl(profile.picture?.avatarUrl)
+   }
+  }, [profile])
+
+  const signOut = async () => {
+    await supabaseClient.auth.signOut()
+    setAvatarUrl('')
+  }
 
   return (
     <>
@@ -162,16 +158,16 @@ const MainNavigation = () => {
                   Home
                 </Button>
               </NavLink>
-              <NavLink style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} to="/invoices" end>
+              <NavLink style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} to="/invoices" end>
                 Invoices
               </NavLink>
-              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Profiles
               </NavLink>
-              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Posts
               </NavLink>
-              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Profile
               </NavLink>
             </HStack>
@@ -180,7 +176,7 @@ const MainNavigation = () => {
             {session ? (
               <>
                 <Button
-                  onClick={() => supabaseClient.auth.signOut()}
+                  onClick={signOut}
                   variant={'solid'}
                   colorScheme={'teal'}
                   size={'sm'}
@@ -193,7 +189,7 @@ const MainNavigation = () => {
                     <HStack>
                       <Avatar size={'sm'} src={avatar_url ? imageUrl : ''} />
                       <VStack display={{ base: 'none', md: 'flex' }} alignItems="flex-start" spacing="1px" ml="2">
-                        <Text fontSize="sm">{username}</Text>
+                        <Text fontSize="sm">{profile?.username}</Text>
                         <Text fontSize="xs" color="gray.600">
                           Admin
                         </Text>
@@ -201,7 +197,7 @@ const MainNavigation = () => {
                     </HStack>
                   </MenuButton>
                   <MenuList>
-                    <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+                    <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                       <MenuItem>Profile</MenuItem>
                     </NavLink>
 
@@ -213,7 +209,7 @@ const MainNavigation = () => {
                 </Menu>
               </>
             ) : (
-              <NavLink to="/login" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/login" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Login
               </NavLink>
             )}
@@ -224,21 +220,21 @@ const MainNavigation = () => {
         {isOpen ? (
           <Box pb={4} display={{ md: 'none' }}>
             <Stack as={'nav'} spacing={4}>
-              <NavLink to="/" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 <Button leftIcon={<FaHome />} size={'sm'} mr={4}>
                   Home
                 </Button>
               </NavLink>
-              <NavLink to="/invoices" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/invoices" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Invoices
               </NavLink>
-              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Profiles
               </NavLink>
-              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/posts" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Posts
               </NavLink>
-              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : ''})} end>
+              <NavLink to="/profile" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Profile
               </NavLink>
             </Stack>

@@ -22,6 +22,7 @@ model Profile {
   programmingLanguages ProgrammingLanguages[]
   picture              Picture?
   posts                Post[]
+  likes                Like[]
 }
 
 model ProgrammingLanguages {
@@ -54,6 +55,8 @@ model Like {
   createdAt DateTime @default(now())
   postId    Int
   Post      Post     @relation(fields: [postId], references: [id])
+  profileId Int
+  Profile   Profile  @relation(fields: [profileId], references: [id])
 }
 
 model Comment {

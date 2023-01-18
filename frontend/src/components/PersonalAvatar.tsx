@@ -69,7 +69,7 @@ const PersonalAvatar = ({ url, onUpload, disabled }: any) => {
 
   return (
     <>
-      <Flex justifyContent="center" alignItems="center" h="216px" w="full" overflow="hidden">
+      <Flex justifyContent="center" alignItems="center" h="120px" w="full" overflow="hidden">
         <Box
           as="div"
           position="relative"

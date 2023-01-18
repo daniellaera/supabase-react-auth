@@ -3,9 +3,10 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 const baseUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/posts`;
 const profileUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/profile`;
 const pictureUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/picture`;
+const likeUrl: string = `${process.env.REACT_APP_BACKEND_URL}/api/v1/like`;
 
 export async function getProfiles() {
-  const  {data}  = await axios.get(profileUrl);
+  const { data } = await axios.get(profileUrl);
   return data;
 }
 
@@ -29,7 +30,7 @@ export const getProfileByAuthorEmail = async (authorEmail: string): Promise<Axio
 };
 
 export async function addPost(post: Omit<IPost, 'id'>, accToken: string) {
-  const response = await axios.post(`${baseUrl}/create`, post, {headers: { Authorization: `token ${accToken}` }});
+  const response = await axios.post(`${baseUrl}/create`, post, { headers: { Authorization: `token ${accToken}` } });
   return response;
 }
 
@@ -57,17 +58,28 @@ export async function publishProfile(profileId: number) {
   return response;
 }
 
-export async function createPicture(picture: Omit<IPicture, 'id'>) {
-  const response = await axios.post(`${pictureUrl}/create`, picture);
+export async function createPicture(picture: Omit<IPicture, 'id'>, accToken: string) {
+  const response = await axios.post(`${pictureUrl}/create`, picture, {
+    headers: { Authorization: `token ${accToken}` }
+  });
   return response;
 }
 
-export async function updatePicture(picture: Omit<IPicture, 'id'>) {
-  const response = await axios.put(`${pictureUrl}/update`, picture);
+export async function updatePicture(picture: Omit<IPicture, 'id'>, accToken: string) {
+  const response = await axios.put(`${pictureUrl}/update`, picture, {
+    headers: { Authorization: `token ${accToken}` }
+  });
   return response;
 }
 
 export async function getPictureByProfileId(profileId: number) {
   const response = await axios.get(`${pictureUrl}/pictureByProfileId/${profileId}`);
+  return response;
+}
+
+export async function addLike(like: Omit<ILike, 'id'>, accToken: string) {
+  const response = await axios.post(`${likeUrl}/create`, like, {
+    headers: { Authorization: `token ${accToken}` }
+  });
   return response;
 }

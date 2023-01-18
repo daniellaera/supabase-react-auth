@@ -8,8 +8,12 @@ router.get('/', async (req, res) => {
   const posts = await prisma.post.findMany({
     include: {
       profile: {
-        select: { authorEmail: true, picture: { select: { avatarUrl: true } } },
+        select: {
+          authorEmail: true,
+          picture: { select: { avatarUrl: true } },
+        },
       },
+      likes: { select: { id: true } },
     },
   });
   res.status(200).json(posts);
@@ -45,6 +49,7 @@ router.get('/post/:id', async (req, res) => {
             picture: { select: { avatarUrl: true } },
           },
         },
+        likes: { select: { id: true } },
       },
     });
     res.json(post);

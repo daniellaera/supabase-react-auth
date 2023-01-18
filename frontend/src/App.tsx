@@ -1,5 +1,5 @@
 import { Box, ChakraProvider, theme, useToast } from '@chakra-ui/react';
-import { AuthChangeEvent } from '@supabase/supabase-js';
+import { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Invoices from './components/Invoices';
@@ -20,6 +20,7 @@ import Signin from './components/Auth/Signin';
 
 export const App = () => {
   const [signedIn, setSignedIn] = useState<boolean>(true);
+  const [session, setSession] = useState<Session | null>();
   const toast = useToast();
   const [event, setEvent] = useState<AuthChangeEvent>()
 
@@ -39,7 +40,7 @@ export const App = () => {
       position: 'bottom',
       render: () => (
         <Box color='white' p={3} bg='green.500'>
-          {e === 'SIGNED_IN' ? `Signed In` : `SIgned Out`}
+          {e === 'SIGNED_IN' ? `Signed In` : `Signed Out`}
         </Box>
       ),
     })
@@ -52,6 +53,8 @@ export const App = () => {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw error;
       if (session) {
+        setSession(session)
+        //console.log('session from App', session.access_token)
         setSignedIn(true)
       } else {
         setSignedIn(false)
@@ -73,7 +76,7 @@ export const App = () => {
             <Route path="/posts" element={<PostLayout />}>
               <Route index element={<PostPage />} />
             </Route>
-            <Route path="/posts/:id" element={<PostDetailPage />} />
+            <Route path="/posts/:id" element={<PostDetailPage session={session} />} />
             <Route
               path="/post/new"
               element={

@@ -81,7 +81,7 @@ const ProfilePage = () => {
       profileId: profileId!,
       avatarUrl: avatarUrl!
     };
-    return await updatePicture(picture);
+    return await updatePicture(picture, session?.access_token!);
   }
 
   const { isLoading: isUpdatingProfileUrl, mutate: updateProfileUrl } = useMutation(
@@ -110,7 +110,7 @@ const ProfilePage = () => {
       profileId: profileId!,
       avatarUrl: avatarUrl!
     };
-    return await createPicture(picture);
+    return await createPicture(picture, session?.access_token!);
   }
 
   const { isLoading: isCreatingProfileUrl, mutate: createProfileUrl } = useMutation(
@@ -128,8 +128,16 @@ const ProfilePage = () => {
         });
         eventBus.dispatch('profileUpdated', true);
       },
-      onError: (err) => {
-        console.log(err)
+      onError: (err: any) => {
+        toast({
+          title: 'Error uploading picture',
+          position: 'top',
+          variant: 'subtle',
+          description: err.response.data.error,
+          status: 'error',
+          duration: 3000,
+          isClosable: true
+        });
       },
     }
   );

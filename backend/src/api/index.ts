@@ -6,6 +6,7 @@ import posts from './posts';
 import users from './users';
 import profile from './profile';
 import picture from './picture';
+import like from './like';
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ router.use('/users', users);
 router.use('/posts', posts);
 router.use('/profile', profile);
 router.use('/picture', picture);
+router.use('/like', like);
 
 export default router;

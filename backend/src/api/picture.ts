@@ -1,5 +1,6 @@
 import express from 'express';
 import prisma from '../lib/prisma';
+import { auth } from '../middleware/auth';
 
 const router = express.Router();
 
@@ -17,19 +18,22 @@ router.get('/pictureByProfileId/:profileId', async (req, res) => {
   }
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
   const { profileId, avatarUrl } = req.body;
-
-  const result = await prisma.picture.create({
-    data: {
-      avatarUrl,
-      profileId: profileId,
-    },
-  });
-  res.json(result);
+  try {
+    const result = await prisma.picture.create({
+      data: {
+        avatarUrl,
+        profileId: profileId,
+      },
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    return res.status(400).json({ error: 'Unauthorized' });
+  }
 });
 
-router.put('/update', async (req, res) => {
+router.put('/update', auth, async (req, res) => {
   const { profileId, avatarUrl } = req.body;
 
   const updateUser = await prisma.picture.update({
