@@ -22,34 +22,37 @@ import {
   AlertDialogFooter,
   HStack
 } from '@chakra-ui/react';
-import { User } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { AxiosResponse } from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import { createProfile, getProfileByAuthorEmail, publishProfile, saveProfile, getPictureByProfileId } from '../api';
 import { supabaseClient } from '../config/supabase-client';
 import { getRandomColor } from '../utils/functions';
 import PersonalAvatar from './PersonalAvatar';
 import { AsyncSelect, MultiValue } from 'chakra-react-select';
 import { pickListOptions } from '../config/pickListOptions';
 import { FaAddressBook, FaCheck } from 'react-icons/fa';
+import eventBus from '../eventBus';
+import { createPicture, getPictureByProfileId, getProfileByAuthorEmail, updatePicture, createProfile, saveProfile, publishProfile } from '../api';
 
 const mappedColourOptions = pickListOptions.map(option => ({
   ...option,
   colorScheme: option.color
 }));
 
-const Invoices = () => {
-  //const [session, setSession] = useState<Session | null>();
+const Profile = () => {
+  const [session, setSession] = useState<Session | null>();
   const [profile, setProfile] = useState<IProfile>()
   const [picture, setPicture] = useState<IPicture>()
+  const [avatarUrl, setAvatarUrl] = useState<string>();
   const [username, setUsername] = useState<string>();
   const [website, setWebsite] = useState<string>();
   const [company, setCompany] = useState<string>();
   const [profileId, setProfileId] = useState<number>()
   const [authorEmail, setAuthorEmail] = useState<string>();
   const [user, setUser] = useState<User>()
-  const [isEditingLanguage, setIsEditingLanguage] = useState<boolean>(false);
+  const [isEditingLanguage, setIsEditingLanguage] = useState<boolean>();
+  const [isUrlUploaded, setIsUrlUploaded] = useState<boolean>();
   const [isPublic, setIsPublic] = useState<boolean>();
   const [languages, setLanguages] = useState<IProgrammingLanguage[] | undefined>();
   const [newParams, setNewParams] = useState<any[]>([]);
@@ -59,6 +62,20 @@ const Invoices = () => {
 
   const color3 = useColorModeValue('gray.50', 'gray.800')
   const color4 = useColorModeValue('white', 'gray.700')
+
+  useEffect(() => {
+    const setData = async () => {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      setSession(session);
+      //console.log('session from App', session?.access_token)
+      if (session) {
+        setUser(session.user)
+      }
+    };
+
+    setData();
+  }, []);
 
   const fetchProfilePicture = async () => {
     const res: AxiosResponse<ApiDataType> = await getPictureByProfileId(profile?.id!)
@@ -89,6 +106,7 @@ const Invoices = () => {
 
   const { data: profileData, error: profileError, isLoading: isFetchingProfile, refetch: refetchProfile } = useQuery(['profile'], fetchProfile, {
     enabled: false, retry: 2, cacheTime: 0, onSuccess(res: IProfile) {
+      setProfile(res)
       if (res != null) {
         setUsername(res.username)
         setWebsite(res.website)
@@ -206,18 +224,71 @@ const Invoices = () => {
     }
   );
 
-  useEffect(() => {
-    const setData = async () => {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      if (error) throw error;
-      //setSession(session);
-      if (session) {
-        setUser(session.user)
-      }
+  const postCreateProfilePicture = async (): Promise<AxiosResponse> => {
+    const picture: Omit<IPicture, 'id'> = {
+      profileId: profileId!,
+      avatarUrl: avatarUrl!
     };
+    return await createPicture(picture, session?.access_token!);
+  }
 
-    setData();
-  }, []);
+  const { isLoading: isCreatingProfileUrl, mutate: createProfilePicture } = useMutation(
+    postCreateProfilePicture,
+    {
+      onSuccess: (res) => {
+        toast({
+          title: 'Picture created.',
+          position: 'top',
+          variant: 'subtle',
+          description: '',
+          status: 'success',
+          duration: 3000,
+          isClosable: true
+        });
+        eventBus.dispatch('profileUpdated', true);
+      },
+      onError: (err: any) => {
+        toast({
+          title: 'Error uploading picture',
+          position: 'top',
+          variant: 'subtle',
+          description: err.response.data.error,
+          status: 'error',
+          duration: 3000,
+          isClosable: true
+        });
+      },
+    }
+  );
+
+  const postUpdateProfilePicture = async (): Promise<AxiosResponse> => {
+    const picture: Omit<IPicture, 'id'> = {
+      profileId: profileId!,
+      avatarUrl: avatarUrl!
+    };
+    return await updatePicture(picture, session?.access_token!);
+  }
+
+  const { isLoading: isUpdatingProfileUrl, mutate: updateProfilePicture } = useMutation(
+    postUpdateProfilePicture,
+    {
+      onSuccess: (res) => {
+        toast({
+          title: 'Picture updated.',
+          position: 'top',
+          variant: 'subtle',
+          description: '',
+          status: 'success',
+          duration: 3000,
+          isClosable: true
+        });
+        eventBus.dispatch('profileUpdated', true);
+      },
+      onError: (err) => {
+        console.log(err)
+      },
+    }
+  );
 
   useEffect(() => {
     if (user) {
@@ -231,10 +302,22 @@ const Invoices = () => {
     if (picture) {
       //console.log('pic pic', picture)
     }
-  }, [user, refetchProfile, profile, refetchPicture, picture])
+    
+  }, [user, refetchProfile, profile, refetchPicture])
 
-  if (isFetchingProfile) {
-    return <Progress size={'xs'} isIndeterminate />
+  useEffect(() => {
+
+    if (isUrlUploaded) {
+      handleProfilePicture()
+    }
+  }, [isUrlUploaded])
+
+  async function handleProfilePicture() {
+    try {
+      picture?.id ? updateProfilePicture() : createProfilePicture();
+    } catch (error: any) {
+      alert(error.message);
+    }
   }
 
   function publishMe() {
@@ -269,6 +352,8 @@ const Invoices = () => {
     setLanguages(newParams)
   }
 
+  if (isFetchingProfile) return <Progress size={'xs'} isIndeterminate />
+
   return (
     <Flex
       justify={'center'}
@@ -288,12 +373,15 @@ const Invoices = () => {
         <FormControl id="userName">
           <PersonalAvatar
             url={picture?.avatarUrl}
-            disabled={!profile?.id}
-
+            disabled={!profileId}
+            onUpload={(url: any) => {
+              setAvatarUrl(url);
+              setIsUrlUploaded(true)
+            }}
           />
           <Box textAlign={'center'}>
             <Text fontSize={'sm'} fontWeight={500} color={'gray.500'} mb={4}>
-              {authorEmail}
+              {session?.user.email}
             </Text>
             <Badge ml='1' colorScheme={isPublic ? `green` : `gray`}>
               {isPublic ? `Public` : `Private`}
@@ -424,4 +512,4 @@ const Invoices = () => {
   );
 }
 
-export default Invoices
+export default Profile

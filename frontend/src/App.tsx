@@ -2,7 +2,7 @@ import { Box, ChakraProvider, theme, useToast } from '@chakra-ui/react';
 import { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Invoices from './components/Invoices';
+import Invoices from './components/Profile';
 import NotFound from './components/NotFound';
 import ProtectedRoute from './components/ProtectedRoute';
 import RootLayout from './components/RootLayout';
@@ -17,6 +17,7 @@ import ProfilePage from './pages/ProfilePage';
 import WelcomePage from './pages/WelcomePage';
 import ProfilesPage from './pages/ProfilesPage';
 import Signin from './components/Auth/Signin';
+import Profile from './components/Profile';
 
 export const App = () => {
   const [signedIn, setSignedIn] = useState<boolean>(true);
@@ -85,13 +86,13 @@ export const App = () => {
                 </ProtectedRoute>
               }
             />
-            <Route path="/invoices" element={<Invoices />} />
+            {/* <Route path="/invoices" element={<Invoices />} /> */}
             <Route path="/profile" element={
               <ProtectedRoute signedIn={signedIn}>
                 <ProfileLayout />
               </ProtectedRoute>
             }>
-              <Route index element={<ProfilePage />} />
+              <Route index element={<Profile />} />
             </Route>
             <Route path="/login" element={<Signin />} />
           </Routes>

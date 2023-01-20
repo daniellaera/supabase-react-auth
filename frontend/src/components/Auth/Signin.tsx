@@ -177,7 +177,7 @@ export const Signin = () => {
       } else {
         setUser(data.user)
         setSession(data.session)
-        navigate("/invoices");
+        navigate("/profile");
       }
     } catch (err) {
       throw err;

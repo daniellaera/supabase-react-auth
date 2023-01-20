@@ -22,8 +22,8 @@ import { AxiosResponse } from 'axios';
 import { useEffect, useState } from 'react';
 import { FaHome } from 'react-icons/fa';
 import { FiLogOut } from 'react-icons/fi';
-import { useQuery } from 'react-query';
-import { NavLink } from 'react-router-dom';
+import { useQuery, useQueryClient } from 'react-query';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { getPictureByProfileId, getProfileByAuthorEmail } from '../api';
 import { ColorModeSwitcher } from '../ColorModeSwitcher';
 import { supabaseClient } from '../config/supabase-client';
@@ -36,6 +36,8 @@ const MainNavigation = () => {
   const [imageUrl, setImageUrl] = useState<string | undefined>();
   const [profile, setProfile] = useState<IProfile>()
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     // we listen here if someone cleans the storage in the browser
@@ -51,8 +53,28 @@ const MainNavigation = () => {
     handleLocalStorage()
   }, []);
 
+  useEffect(() => {
+    const setData = async () => {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) throw error;
+      if (session) {
+        setSession(session)
+        //setUser(session.user)
+      }
+    };
+
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      if (_event === 'SIGNED_OUT') {
+        localStorage.removeItem('user');
+      }
+      setSession(session);
+    });
+
+    setData();
+  }, []);
+
   const fetchProfile = async () => {
-    const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(user?.email!)
+    const res: AxiosResponse<ApiDataType> = await getProfileByAuthorEmail(session?.user?.email!)
     return res.data;
   };
 
@@ -70,7 +92,7 @@ const MainNavigation = () => {
     return res.data
   }
 
-  const { data: pictureData, isLoading, isError, refetch: refetchPicture } = useQuery(['profilePicture'], fetchProfilePicture, {
+  const { data: pictureData, isLoading, isError, refetch: refetchPicture } = useQuery('profilePicture', fetchProfilePicture, {
     enabled: false, retry: 2, cacheTime: 0, onSuccess(res: IPicture) {
       //setPicture(res)
     },
@@ -107,31 +129,23 @@ const MainNavigation = () => {
   });
 
   useEffect(() => {
-    const setData = async () => {
-      const { data: { session }, error } = await supabaseClient.auth.getSession();
-      if (error) throw error;
-      if (session) {
-        setSession(session)
-      }
-    };
-
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-
-    setData();
-  }, []);
-
-  useEffect(() => {
+    if (session?.user) {
+      //console.log('user->', session.user.email)
+      setUser(session.user)
+      refetchProfile()
+    }
     
-   if (profile) {
-    setAvatarUrl(profile.picture?.avatarUrl)
+   if (user) {
+    
+    //setProfile(profileData)
+    setAvatarUrl(profile?.picture?.avatarUrl)
    }
-  }, [profile])
+  }, [session?.user, profile, user, refetchProfile])
 
   const signOut = async () => {
     await supabaseClient.auth.signOut()
     setAvatarUrl('')
+    navigate("/login");
   }
 
   return (
@@ -159,7 +173,7 @@ const MainNavigation = () => {
                 </Button>
               </NavLink>
               <NavLink style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} to="/invoices" end>
-                Invoices
+                Not Found
               </NavLink>
               <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Profiles
@@ -204,7 +218,7 @@ const MainNavigation = () => {
                     <MenuItem>Settings</MenuItem>
                     <MenuItem>Billing</MenuItem>
                     <MenuDivider />
-                    <MenuItem onClick={() => supabaseClient.auth.signOut()}>Sign out</MenuItem>
+                    <MenuItem onClick={() => signOut}>Sign out</MenuItem>
                   </MenuList>
                 </Menu>
               </>
@@ -226,7 +240,7 @@ const MainNavigation = () => {
                 </Button>
               </NavLink>
               <NavLink to="/invoices" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
-                Invoices
+                Not Found
               </NavLink>
               <NavLink to="/profiles" style={({ isActive }) => ({ color: isActive ? 'lightblue' : '' })} end>
                 Profiles
