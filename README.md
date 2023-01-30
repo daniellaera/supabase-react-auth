@@ -9,3 +9,5 @@ You'll notice that in the `.devcontainer/devcontainer.json` line 22 the `"dotfil
 For doing this, you'll need to have a valid ssh key on your machine, ex: `ssh-keygen -t ed25519 -C "your_email@....com"` and add it to your own GitHub SSH settings, otherwise the remote repository won't be accessible and so the script `install.sh` won't be executed.
 
 ### Enjoy {^_^}
+
+![Alt text](/thumbnail.png?raw=true "Optional Title")
