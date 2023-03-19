@@ -1,3 +1,7 @@
+## This projet has a major upgrade and will be soon archived.
+
+The new DevConnector has been moved here: https://github.com/daniellaera/admin-dashboard
+
 # Supabase React Auth with Prisma ORM
 
 When cloning this project in container volume (remote), a script located in `.devcontainer/scripts/bootstrap.sh` will bootstrap everything for you; that means, installing `frontend/package.json` & `backend/package.json` dependencies with npm.
