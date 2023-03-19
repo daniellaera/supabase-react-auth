@@ -1,6 +1,6 @@
 ## This projet has a major upgrade and will be soon archived.
 
-The new DevConnector has been moved here: https://github.com/daniellaera/admin-dashboard
+## The new DevConnector has been moved here: https://github.com/daniellaera/admin-dashboard
 
 # Supabase React Auth with Prisma ORM
 
